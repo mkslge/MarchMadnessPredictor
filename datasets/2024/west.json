@@ -1,0 +1,106 @@
+{
+  "Region": [
+    {
+      "Seed": 1,
+      "Team": "North Carolina",
+      "AdjEM": 24.88,
+      "AdjT": 70.6
+    },
+    {
+      "Seed": 2,
+      "Team": "Arizona",
+      "AdjEM": 27.02,
+      "AdjT": 72.0
+    },
+    {
+      "Seed": 3,
+      "Team": "Baylor",
+      "AdjEM": 21.90,
+      "AdjT": 65.8
+    },
+    {
+      "Seed": 4,
+      "Team": "Alabama",
+      "AdjEM": 22.96,
+      "AdjT": 72.6
+    },
+    {
+      "Seed": 5,
+      "Team": "Saint Mary's",
+      "AdjEM": 19.43,
+      "AdjT": 62.5
+    },
+    {
+      "Seed": 6,
+      "Team": "Clemson",
+      "AdjEM": 19.44,
+      "AdjT": 66.4
+    },
+    {
+      "Seed": 7,
+      "Team": "Dayton",
+      "AdjEM": 17.30,
+      "AdjT": 64.5
+    },
+    {
+      "Seed": 8,
+      "Team": "Mississipi St.",
+      "AdjEM": 17.07,
+      "AdjT": 67.1
+    },
+    {
+      "Seed": 9,
+      "Team": "Michigan St.",
+      "AdjEM": 20.58,
+      "AdjT": 65.3
+    },
+    {
+      "Seed": 10,
+      "Team": "Nevada",
+      "AdjEM": 16.41,
+      "AdjT": 66.8
+    },
+    {
+      "Seed": 11,
+      "Team": "New Mexico St.",
+      "AdjEM": 17.80,
+      "AdjT": 72.8
+    },
+    {
+      "Seed": 12,
+      "Team": "Grand Canyon",
+      "AdjEM": 14.84,
+      "AdjT": 68.5
+    },
+    {
+      "Seed": 13,
+      "Team": "Charleston",
+      "AdjEM": 7.52,
+      "AdjT": 70.3
+    },
+
+    {
+      "Seed": 14,
+      "Team": "Charleston",
+      "AdjEM": 1.50,
+      "AdjT": 66.4
+    },
+    {
+      "Seed": 15,
+      "Team": "Long Beach St.",
+      "AdjEM": -0.25,
+      "AdjT": 71.5
+    },
+    {
+      "Seed": 16,
+      "Team": "Wagner",
+      "AdjEM": -10.00,
+      "AdjT": 61.6
+    }
+
+
+
+
+
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "Region": [
+    {
+      "Seed": 1,
+      "Team": "Houston",
+      "AdjEM": 21.31,
+      "AdjT": 63.5
+    },
+    {
+      "Seed": 2,
+      "Team": "Marquette",
+      "AdjEM": 22.32,
+      "AdjT": 69.1
+    },
+    {
+      "Seed": 3,
+      "Team": "Kentucky",
+      "AdjEM": 18.94,
+      "AdjT": 72.6
+    },
+    {
+      "Seed": 4,
+      "Team": "Duke",
+      "AdjEM": 25.04,
+      "AdjT": 66.8
+    },
+    {
+      "Seed": 5,
+      "Team": "Wisconsin",
+      "AdjEM": 20.76,
+      "AdjT": 65.2
+    },
+    {
+      "Seed": 6,
+      "Team": "Texas Tech",
+      "AdjEM": 17.29,
+      "AdjT": 66.7
+    },
+    {
+      "Seed": 7,
+      "Team": "Florida",
+      "AdjEM": 17.88,
+      "AdjT": 71.8
+    },
+    {
+      "Seed": 8,
+      "Team": "Nebraska",
+      "AdjEM": 18.37,
+      "AdjT": 68.7
+    },
+    {
+      "Seed": 9,
+      "Team": "Texas A&M",
+      "AdjEM": 15.75,
+      "AdjT": 65.9
+    },
+    {
+      "Seed": 10,
+      "Team": "Colorado",
+      "AdjEM": 19.18,
+      "AdjT": 67.4
+    },
+    {
+      "Seed": 11,
+      "Team": "N.C. State",
+      "AdjEM": 13.87,
+      "AdjT": 68.1
+    },
+    {
+      "Seed": 12,
+      "Team": "James Madison",
+      "AdjEM": 12.88,
+      "AdjT": 69.6
+    },
+    {
+      "Seed": 13,
+      "Team": "Vermont",
+      "AdjEM": 6.96,
+      "AdjT": 63.3
+    },
+
+    {
+      "Seed": 14,
+      "Team": "Oakland",
+      "AdjEM": 3.81,
+      "AdjT": 66.6
+    },
+    {
+      "Seed": 15,
+      "Team": "Western Kentucky",
+      "AdjEM": 3.03,
+      "AdjT": 75.2
+    },
+    {
+      "Seed": 16,
+      "Team": "Longwood",
+      "AdjEM": 0.92,
+      "AdjT": 66.9
+    }
+
+
+
+
+
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "Region": [
+    {
+      "Seed": 1,
+      "Team": "Purdue",
+      "AdjEM": 29.34,
+      "AdjT": 67.5
+    },
+    {
+      "Seed": 2,
+      "Team": "Tennessee",
+      "AdjEM": 26.15,
+      "AdjT": 69.2
+    },
+    {
+      "Seed": 3,
+      "Team": "Creighton",
+      "AdjEM": 23.27,
+      "AdjT": 67.1
+    },
+    {
+      "Seed": 4,
+      "Team": "Kansas",
+      "AdjEM": 18.67,
+      "AdjT": 69.2
+    },
+    {
+      "Seed": 5,
+      "Team": "Gonzaga",
+      "AdjEM": 22.61,
+      "AdjT": 69.3
+    },
+    {
+      "Seed": 6,
+      "Team": "South Carolina",
+      "AdjEM": 14.05,
+      "AdjT": 63.1
+    },
+    {
+      "Seed": 7,
+      "Team": "Texas",
+      "AdjEM": 18.61,
+      "AdjT": 67.3
+    },
+    {
+      "Seed": 8,
+      "Team": "Utah St.",
+      "AdjEM": 15.38,
+      "AdjT": 68.6
+    },
+    {
+      "Seed": 9,
+      "Team": "TCU",
+      "AdjEM": 16.91,
+      "AdjT": 69.8
+    },
+    {
+      "Seed": 10,
+      "Team": "Colorado St.",
+      "AdjEM": 17.43,
+      "AdjT": 66.1
+    },
+    {
+      "Seed": 11,
+      "Team": "Oregon",
+      "AdjEM": 14.50,
+      "AdjT": 67.4
+    },
+    {
+      "Seed": 12,
+      "Team": "McNeese St.",
+      "AdjEM": 11.8,
+      "AdjT": 65.8
+    },
+    {
+      "Seed": 13,
+      "Team": "Samford",
+      "AdjEM": 10.02,
+      "AdjT": 72.7
+    },
+    {
+      "Seed": 14,
+      "Team": "Akron",
+      "AdjEM": 4.72,
+      "AdjT": 66.0
+    },
+    {
+      "Seed": 15,
+      "Team": "Saint Peter's",
+      "AdjEM": -2.89,
+      "AdjT": 64.0
+    },
+    {
+      "Seed": 16,
+      "Team": "Grambling St.",
+      "AdjEM": -6.97,
+      "AdjT": 64.9
+    }
+  ]
+}

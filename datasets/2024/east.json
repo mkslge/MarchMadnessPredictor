@@ -1,0 +1,100 @@
+{
+  "Region": [
+    {
+      "Seed": 1,
+      "Team": "Connecticut",
+      "AdjEM": 31.81,
+      "AdjT": 64.5
+    },
+    {
+      "Seed": 2,
+      "Team": "Iowa St.",
+      "AdjEM": 26.46,
+      "AdjT": 67.3
+    },
+    {
+      "Seed": 3,
+      "Team": "Illinois",
+      "AdjEM": 24.39,
+      "AdjT": 69.9
+    },
+    {
+      "Seed": 4,
+      "Team": "Auburn",
+      "AdjEM": 28.54,
+      "AdjT": 69.9
+    },
+    {
+      "Seed": 5,
+      "Team": "San Diego St.",
+      "AdjEM": 20.0,
+      "AdjT": 66.0
+    },
+    {
+      "Seed": 6,
+      "Team": "BYU",
+      "AdjEM": 20.03,
+      "AdjT": 69.1
+    },
+    {
+      "Seed": 7,
+      "Team": "Washington St.",
+      "AdjEM": 16.77,
+      "AdjT": 65.0
+    },
+    {
+      "Seed": 8,
+      "Team": "Florida Atlantic",
+      "AdjEM": 16.35,
+      "AdjT": 68.1
+    },
+    {
+      "Seed": 9,
+      "Team": "Northwestern",
+      "AdjEM": 16.12,
+      "AdjT": 63.8
+    },
+    {
+      "Seed": 10,
+      "Team": "Drake",
+      "AdjEM": 14.65,
+      "AdjT": 68.0
+    },
+    {
+      "Seed": 11,
+      "Team": "Duquesne",
+      "AdjEM": 10.07,
+      "AdjT": 66.4
+    },
+    {
+      "Seed": 12,
+      "Team": "UAB",
+      "AdjEM": 6.39,
+      "AdjT": 67.8
+    },
+    {
+      "Seed": 13,
+      "Team": "Yale",
+      "AdjEM": 9.42,
+      "AdjT": 64.6
+    },
+    {
+      "Seed": 14,
+      "Team": "Morehead St.",
+      "AdjEM": 5.18,
+      "AdjT": 64.2
+    },
+    {
+      "Seed": 15,
+      "Team": "South Dakota St.",
+      "AdjEM": 2.83,
+      "AdjT": 67.9
+    },
+    {
+      "Seed": 16,
+      "Team": "Stetson",
+      "AdjEM": -4.33,
+      "AdjT": 66.2
+    }
+  ]
+}
