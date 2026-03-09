@@ -6,6 +6,7 @@ import org.example.marchmadness.factories.ModelFactory;
 import org.example.marchmadness.generators.BracketGenerator;
 import org.example.marchmadness.generators.FinalFourGenerator;
 import org.example.marchmadness.generators.RegionGenerator;
+import org.example.marchmadness.controllers.BracketController;
 import org.example.marchmadness.models.Bracket;
 import org.example.marchmadness.models.FinalFour;
 import org.example.marchmadness.models.Game;
@@ -14,6 +15,7 @@ import org.example.marchmadness.models.RegionType;
 import org.example.marchmadness.models.Team;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
@@ -24,12 +26,17 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class MarchMadnessApplicationTests {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final int TEST_YEAR = 2024;
+    private static final int TEST_YEAR_2023 = 2023;
+
+    @Autowired
+    private BracketController bracketController;
 
     /**
      * Command: Parse JSON text into a traversable node tree for assertions.
@@ -252,5 +259,42 @@ class MarchMadnessApplicationTests {
         allowedChampions.add(finalFourNode.get("midwest").get("Team").asText());
 
         assertTrue(allowedChampions.contains(bracket.getChampionName()));
+    }
+
+    @Test
+    @DisplayName("Region model rejects 2023 datasets because each region currently has 17 teams")
+    void regionModel_2023DatasetSizeMismatchThrowsException() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> new Region(RegionType.EAST, TEST_YEAR_2023)
+        );
+        assertTrue(exception.getMessage().contains("Expected 16 teams but found 17"));
+    }
+
+    @Test
+    @DisplayName("Bracket generator fails for 2023 due to invalid region dataset size")
+    void bracketGenerator_2023DatasetSizeMismatchThrowsException() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> new BracketGenerator(TEST_YEAR_2023)
+        );
+        assertTrue(exception.getMessage().contains("Expected 16 teams but found 17"));
+    }
+
+    @Test
+    @DisplayName("Controller endpoint path throws for 2023 when region dataset has 17 teams")
+    void endpointPath_2023ThrowsException() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> bracketController.generateBracket(TEST_YEAR_2023)
+        );
+    }
+
+    @Test
+    @DisplayName("Controller endpoint path returns bracket for 2024 and remains healthy")
+    void endpointPath_2024ReturnsBracket() {
+        Bracket bracket = bracketController.generateBracket(TEST_YEAR);
+        assertNotNull(bracket);
+        assertNotNull(bracket.getChampion());
     }
 }
