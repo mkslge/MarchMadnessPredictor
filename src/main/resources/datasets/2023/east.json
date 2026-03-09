@@ -1,0 +1,106 @@
+{
+  "Region": [
+    {
+      "Seed": 1,
+      "Team": "Purdue",
+      "AdjEM": 23.24,
+      "AdjT": 64.2
+    },
+    {
+      "Seed": 2,
+      "Team": "Marquette",
+      "AdjEM": 22.38,
+      "AdjT": 68.1
+    },
+    {
+      "Seed": 3,
+      "Team": "Kansas St.",
+      "AdjEM": 18.51,
+      "AdjT": 70.1
+    },
+    {
+      "Seed": 4,
+      "Team": "Tennessee",
+      "AdjEM": 23.8,
+      "AdjT": 65.1
+    },
+    {
+      "Seed": 5,
+      "Team": "Duke",
+      "AdjEM": 19.35,
+      "AdjT": 64.9
+    },
+    {
+      "Seed": 6,
+      "Team": "Kentucky",
+      "AdjEM": 17.4,
+      "AdjT": 65.8
+    },
+    {
+      "Seed": 7,
+      "Team": "Michigan St.",
+      "AdjEM": 17.61,
+      "AdjT": 64.7
+    },
+    {
+      "Seed": 8,
+      "Team": "Memphis",
+      "AdjEM": 18.53,
+      "AdjT": 71.1
+    },
+    {
+      "Seed": 9,
+      "Team": "Florida Atlantic",
+      "AdjEM": 19.38,
+      "AdjT": 67.6
+    },
+    {
+      "Seed": 10,
+      "Team": "USC",
+      "AdjEM": 14.85,
+      "AdjT": 68.0
+    },
+    {
+      "Seed": 11,
+      "Team": "Providence",
+      "AdjEM": 15.39,
+      "AdjT": 66.7
+    },
+    {
+      "Seed": 12,
+      "Team": "Oral Roberts",
+      "AdjEM": 11.65,
+      "AdjT": 70.2
+    },
+    {
+      "Seed": 13,
+      "Team": "Louisiana",
+      "AdjEM": 8.51,
+      "AdjT": 68.3
+    },
+    {
+      "Seed": 14,
+      "Team": "Montana St.",
+      "AdjEM": 5.49,
+      "AdjT": 66.3
+    },
+    {
+      "Seed": 15,
+      "Team": "Vermont",
+      "AdjEM": 5.33,
+      "AdjT": 64.4
+    },
+    {
+      "Seed": 16,
+      "Team": "Fairleigh Dickinson",
+      "AdjEM": -8.36,
+      "AdjT": 68.7
+    },
+    {
+      "Seed": 16,
+      "Team": "Texas Southern",
+      "AdjEM": -11.16,
+      "AdjT": 69.1
+    }
+  ]
+}

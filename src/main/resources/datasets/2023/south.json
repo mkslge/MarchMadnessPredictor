@@ -1,0 +1,106 @@
+{
+  "Region": [
+    {
+      "Seed": 1,
+      "Team": "Alabama",
+      "AdjEM": 27.28,
+      "AdjT": 72.6
+    },
+    {
+      "Seed": 2,
+      "Team": "Arizona",
+      "AdjEM": 21.9,
+      "AdjT": 72.0
+    },
+    {
+      "Seed": 3,
+      "Team": "Baylor",
+      "AdjEM": 19.68,
+      "AdjT": 66.5
+    },
+    {
+      "Seed": 4,
+      "Team": "Virginia",
+      "AdjEM": 16.37,
+      "AdjT": 61.5
+    },
+    {
+      "Seed": 5,
+      "Team": "San Diego St.",
+      "AdjEM": 20.34,
+      "AdjT": 65.7
+    },
+    {
+      "Seed": 6,
+      "Team": "Creighton",
+      "AdjEM": 21.83,
+      "AdjT": 67.8
+    },
+    {
+      "Seed": 7,
+      "Team": "Missouri",
+      "AdjEM": 13.07,
+      "AdjT": 68.7
+    },
+    {
+      "Seed": 8,
+      "Team": "Maryland",
+      "AdjEM": 17.99,
+      "AdjT": 64.2
+    },
+    {
+      "Seed": 9,
+      "Team": "West Virginia",
+      "AdjEM": 18.82,
+      "AdjT": 68.5
+    },
+    {
+      "Seed": 10,
+      "Team": "Utah St.",
+      "AdjEM": 17.39,
+      "AdjT": 68.6
+    },
+    {
+      "Seed": 11,
+      "Team": "N.C. State",
+      "AdjEM": 13.55,
+      "AdjT": 69.0
+    },
+    {
+      "Seed": 12,
+      "Team": "Charleston",
+      "AdjEM": 11.85,
+      "AdjT": 70.8
+    },
+    {
+      "Seed": 13,
+      "Team": "Furman",
+      "AdjEM": 8.01,
+      "AdjT": 68.3
+    },
+    {
+      "Seed": 14,
+      "Team": "UC Santa Barbara",
+      "AdjEM": 5.68,
+      "AdjT": 64.7
+    },
+    {
+      "Seed": 15,
+      "Team": "Princeton",
+      "AdjEM": 8.04,
+      "AdjT": 66.9
+    },
+    {
+      "Seed": 16,
+      "Team": "Texas A&M Corpus Christi",
+      "AdjEM": -0.48,
+      "AdjT": 69.0
+    },
+    {
+      "Seed": 16,
+      "Team": "Southeast Missouri St.",
+      "AdjEM": -7.21,
+      "AdjT": 72.3
+    }
+  ]
+}

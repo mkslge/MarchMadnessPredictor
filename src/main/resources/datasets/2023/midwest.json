@@ -1,0 +1,106 @@
+{
+  "Region": [
+    {
+      "Seed": 1,
+      "Team": "Houston",
+      "AdjEM": 27.72,
+      "AdjT": 63.5
+    },
+    {
+      "Seed": 2,
+      "Team": "Texas",
+      "AdjEM": 24.43,
+      "AdjT": 68.8
+    },
+    {
+      "Seed": 3,
+      "Team": "Xavier",
+      "AdjEM": 19.95,
+      "AdjT": 70.5
+    },
+    {
+      "Seed": 4,
+      "Team": "Indiana",
+      "AdjEM": 17.03,
+      "AdjT": 67.8
+    },
+    {
+      "Seed": 5,
+      "Team": "Miami FL",
+      "AdjEM": 17.94,
+      "AdjT": 68.8
+    },
+    {
+      "Seed": 6,
+      "Team": "Iowa St.",
+      "AdjEM": 17.04,
+      "AdjT": 64.1
+    },
+    {
+      "Seed": 7,
+      "Team": "Texas A&M",
+      "AdjEM": 16.71,
+      "AdjT": 65.9
+    },
+    {
+      "Seed": 8,
+      "Team": "Iowa",
+      "AdjEM": 15.39,
+      "AdjT": 69.5
+    },
+    {
+      "Seed": 9,
+      "Team": "Auburn",
+      "AdjEM": 16.77,
+      "AdjT": 67.6
+    },
+    {
+      "Seed": 10,
+      "Team": "Penn St.",
+      "AdjEM": 16.04,
+      "AdjT": 64.3
+    },
+    {
+      "Seed": 11,
+      "Team": "Pittsburgh",
+      "AdjEM": 12.86,
+      "AdjT": 67.3
+    },
+    {
+      "Seed": 11,
+      "Team": "Mississippi St.",
+      "AdjEM": 13.49,
+      "AdjT": 63.6
+    },
+    {
+      "Seed": 12,
+      "Team": "Drake",
+      "AdjEM": 11.9,
+      "AdjT": 66.3
+    },
+    {
+      "Seed": 13,
+      "Team": "Kent St.",
+      "AdjEM": 11.2,
+      "AdjT": 67.7
+    },
+    {
+      "Seed": 14,
+      "Team": "Kennesaw St.",
+      "AdjEM": 4.04,
+      "AdjT": 68.4
+    },
+    {
+      "Seed": 15,
+      "Team": "Colgate",
+      "AdjEM": 5.24,
+      "AdjT": 67.5
+    },
+    {
+      "Seed": 16,
+      "Team": "Northern Kentucky",
+      "AdjEM": 0.65,
+      "AdjT": 62.0
+    }
+  ]
+}

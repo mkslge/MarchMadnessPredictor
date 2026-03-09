@@ -1,0 +1,106 @@
+{
+  "Region": [
+    {
+      "Seed": 1,
+      "Team": "Kansas",
+      "AdjEM": 22.85,
+      "AdjT": 69.2
+    },
+    {
+      "Seed": 2,
+      "Team": "UCLA",
+      "AdjEM": 27.29,
+      "AdjT": 66.1
+    },
+    {
+      "Seed": 3,
+      "Team": "Gonzaga",
+      "AdjEM": 23.02,
+      "AdjT": 70.3
+    },
+    {
+      "Seed": 4,
+      "Team": "Connecticut",
+      "AdjEM": 29.86,
+      "AdjT": 66.6
+    },
+    {
+      "Seed": 5,
+      "Team": "Saint Mary's",
+      "AdjEM": 21.24,
+      "AdjT": 61.6
+    },
+    {
+      "Seed": 6,
+      "Team": "TCU",
+      "AdjEM": 17.78,
+      "AdjT": 69.7
+    },
+    {
+      "Seed": 7,
+      "Team": "Northwestern",
+      "AdjEM": 15.59,
+      "AdjT": 64.4
+    },
+    {
+      "Seed": 8,
+      "Team": "Arkansas",
+      "AdjEM": 18.05,
+      "AdjT": 69.6
+    },
+    {
+      "Seed": 9,
+      "Team": "Illinois",
+      "AdjEM": 16.22,
+      "AdjT": 69.5
+    },
+    {
+      "Seed": 10,
+      "Team": "Boise St.",
+      "AdjEM": 15.85,
+      "AdjT": 66.2
+    },
+    {
+      "Seed": 11,
+      "Team": "Arizona St.",
+      "AdjEM": 13.26,
+      "AdjT": 68.1
+    },
+    {
+      "Seed": 11,
+      "Team": "Nevada",
+      "AdjEM": 12.74,
+      "AdjT": 65.9
+    },
+    {
+      "Seed": 12,
+      "Team": "VCU",
+      "AdjEM": 12.84,
+      "AdjT": 67.9
+    },
+    {
+      "Seed": 13,
+      "Team": "Iona",
+      "AdjEM": 11.35,
+      "AdjT": 68.7
+    },
+    {
+      "Seed": 14,
+      "Team": "Grand Canyon",
+      "AdjEM": 5.88,
+      "AdjT": 65.0
+    },
+    {
+      "Seed": 15,
+      "Team": "UNC Asheville",
+      "AdjEM": 1.22,
+      "AdjT": 68.3
+    },
+    {
+      "Seed": 16,
+      "Team": "Howard",
+      "AdjEM": -3.38,
+      "AdjT": 69.0
+    }
+  ]
+}
