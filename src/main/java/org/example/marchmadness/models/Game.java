@@ -57,6 +57,11 @@ public class Game {
         loser = null;
     }
 
+    /**
+     * Command: Calculate the underdog win probability for the current matchup.
+     * Preconditions: `team1` and `team2` are non-null with populated tempo/efficiency values.
+     * Postconditions: Updates and returns `oddsOutOf100` for the current matchup.
+     */
     public double calculateOdds() {
         double pointDiff = (team1.getAdjEM() - team2.getAdjEM()) * (team1.getAdjT() + team2.getAdjT()) / 200;
         double cdf = 0.5 * (1 + erf((0 - pointDiff) / (STANDARD_DEVIATION * sqrt(2))));
@@ -64,6 +69,11 @@ public class Game {
         return oddsOutOf100;
     }
 
+    /**
+     * Command: Simulate and select a winner for the current matchup.
+     * Preconditions: `calculateOdds()` has been run for the current teams.
+     * Postconditions: Updates `winner` and `loser`, then returns winner name.
+     */
     public String calculateWinner() {
         double randomDouble = 100 * ThreadLocalRandom.current().nextDouble();
         if (oddsOutOf100 < randomDouble) {
@@ -76,6 +86,11 @@ public class Game {
         return winner.getName();
     }
 
+    /**
+     * Command: Replace matchup participants and immediately resimulate.
+     * Preconditions: Provided teams are non-null.
+     * Postconditions: `team1`, `team2`, `oddsOutOf100`, `winner`, and `loser` are refreshed.
+     */
     public void addTeams(Team team1, Team team2) {
         this.team1 = team1;
         this.team2 = team2;
@@ -103,6 +118,11 @@ public class Game {
         return this.loser;
     }
 
+    /**
+     * Command: Serialize this game into a JSON string.
+     * Preconditions: Game state is initialized.
+     * Postconditions: Returns a JSON representation of the current game result.
+     */
     public String toJson() {
         try {
             return OBJECT_MAPPER.writeValueAsString(this);

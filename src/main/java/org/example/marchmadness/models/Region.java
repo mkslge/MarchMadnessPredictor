@@ -50,6 +50,11 @@ public class Region {
         run();
     }
 
+    /**
+     * Command: Simulate a full regional bracket.
+     * Preconditions: Region/year are valid and the source dataset exists.
+     * Postconditions: Rounds and `regionWinner` are populated for this region.
+     */
     public final void run() {
         initRounds();
         setTeams();
@@ -57,6 +62,11 @@ public class Region {
         setJsonProperties();
     }
 
+    /**
+     * Command: Load region teams and stamp them with the tournament year.
+     * Preconditions: Dataset file exists and is readable.
+     * Postconditions: `teams` contains the 16 seeded teams for this region/year.
+     */
     private void setTeams() {
         mapTeams();
         for (Team team : teams) {
@@ -64,6 +74,11 @@ public class Region {
         }
     }
 
+    /**
+     * Command: Copy round results into JSON-facing properties.
+     * Preconditions: `runGames()` completed successfully.
+     * Postconditions: `fieldOf64`, `fieldOf32`, `sweet16`, and `elite8` are populated.
+     */
     private void setJsonProperties() {
         fieldOf64 = new ArrayList<>(games.get(0));
         fieldOf32 = new ArrayList<>(games.get(1));
@@ -71,6 +86,11 @@ public class Region {
         elite8 = new ArrayList<>(games.get(3));
     }
 
+    /**
+     * Command: Map teams from the region JSON resource.
+     * Preconditions: `year` and `region` point to a valid dataset path.
+     * Postconditions: `teams` is replaced with parsed team data from resource JSON.
+     */
     private void mapTeams() {
         String resourcePath = "datasets/" + year + "/" + region + ".json";
         try (InputStream is = Region.class.getClassLoader().getResourceAsStream(resourcePath)) {
@@ -90,6 +110,11 @@ public class Region {
         }
     }
 
+    /**
+     * Command: Initialize empty round containers for this region simulation.
+     * Preconditions: None.
+     * Postconditions: `games` contains one list per round.
+     */
     private void initRounds() {
         games.clear();
         for (int i = 0; i < NUM_ROUNDS; i++) {
@@ -97,11 +122,21 @@ public class Region {
         }
     }
 
+    /**
+     * Command: Run all games in this regional bracket.
+     * Preconditions: Teams are loaded and rounds initialized.
+     * Postconditions: Each round has simulated games and a final winner exists.
+     */
     private void runGames() {
         runFirstRound();
         runRest();
     }
 
+    /**
+     * Command: Simulate the opening round matchups.
+     * Preconditions: `teams` contains 16 seeded teams.
+     * Postconditions: First-round game list contains 8 simulated games.
+     */
     private void runFirstRound() {
         int numFirstRoundGames = 8;
         for (int i = 0; i < numFirstRoundGames; i++) {
@@ -109,6 +144,11 @@ public class Region {
         }
     }
 
+    /**
+     * Command: Simulate rounds 2 through 4 from previous round winners.
+     * Preconditions: First round has already been simulated.
+     * Postconditions: Remaining rounds are simulated and `regionWinner` is set.
+     */
     private void runRest() {
         int numGames = 4;
         for (int r = SECOND_ROUND_INDEX; r < NUM_ROUNDS; r++) {
@@ -124,10 +164,20 @@ public class Region {
         setWinner();
     }
 
+    /**
+     * Command: Return source game indices used to build the next-round game.
+     * Preconditions: `newIndex` is non-negative.
+     * Postconditions: Returns two indices pointing to prior-round winners.
+     */
     private int[] getTeamIndices(int newIndex) {
         return new int[]{newIndex * 2, newIndex * 2 + 1};
     }
 
+    /**
+     * Command: Promote the regional champion from the Elite 8 result.
+     * Preconditions: Final regional game has been simulated.
+     * Postconditions: `regionWinner` references the winning team.
+     */
     private void setWinner() {
         regionWinner = games.get(FOURTH_ROUND_INDEX).get(0).getWinner();
     }
@@ -136,6 +186,11 @@ public class Region {
         return regionWinner;
     }
 
+    /**
+     * Command: Serialize this region into a JSON string.
+     * Preconditions: Region has been initialized.
+     * Postconditions: Returns a JSON representation of the current region state.
+     */
     public String toJson() {
         try {
             return OBJECT_MAPPER.writeValueAsString(this);

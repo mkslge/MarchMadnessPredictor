@@ -9,6 +9,11 @@ public class RegionGenerator {
     private final RegionStore regionStore = new RegionStore();
     private final ModelFactory modelFactory = new ModelFactory();
 
+    /**
+     * Command: Generate and store all four regional simulations for a year.
+     * Preconditions: Year datasets exist for all regions.
+     * Postconditions: Region store contains EAST, MIDWEST, SOUTH, and WEST results.
+     */
     public RegionGenerator(int year) {
         regionStore.save(RegionType.EAST, modelFactory.createRegion(RegionType.EAST, year));
         regionStore.save(RegionType.MIDWEST, modelFactory.createRegion(RegionType.MIDWEST, year));

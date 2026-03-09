@@ -25,6 +25,11 @@ public class FinalFour {
     private final Game championship;
     private final Team champion;
 
+    /**
+     * Command: Build Final Four and championship results from regional winners.
+     * Preconditions: All four region objects are non-null and each has a winner.
+     * Postconditions: Semifinals, championship, and `champion` are fully simulated.
+     */
     public FinalFour(Region east, Region midwest, Region south, Region west) {
         this.east = new Team(east.getWinner());
         this.midwest = new Team(midwest.getWinner());
@@ -69,6 +74,11 @@ public class FinalFour {
         return west;
     }
 
+    /**
+     * Command: Serialize this Final Four into a JSON string.
+     * Preconditions: Final Four state is initialized.
+     * Postconditions: Returns a JSON representation of the current Final Four.
+     */
     public String toJson() {
         try {
             return OBJECT_MAPPER.writeValueAsString(this);

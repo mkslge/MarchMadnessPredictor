@@ -96,6 +96,11 @@ public class Team {
         this.year = year;
     }
 
+    /**
+     * Command: Serialize this team into a JSON string.
+     * Preconditions: Team state is initialized.
+     * Postconditions: Returns a JSON representation of the current team.
+     */
     public String toJson() {
         try {
             return OBJECT_MAPPER.writeValueAsString(this);

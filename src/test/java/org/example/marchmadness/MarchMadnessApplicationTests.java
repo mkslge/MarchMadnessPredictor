@@ -12,6 +12,7 @@ import org.example.marchmadness.models.Game;
 import org.example.marchmadness.models.Region;
 import org.example.marchmadness.models.RegionType;
 import org.example.marchmadness.models.Team;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -30,11 +31,17 @@ class MarchMadnessApplicationTests {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final int TEST_YEAR = 2024;
 
+    /**
+     * Command: Parse JSON text into a traversable node tree for assertions.
+     * Preconditions: `json` is valid JSON text.
+     * Postconditions: Returns a non-null parsed `JsonNode`.
+     */
     private JsonNode parseJson(String json) throws Exception {
         return OBJECT_MAPPER.readTree(json);
     }
 
     @Test
+    @DisplayName("Context loads and bracket generator returns a champion")
     void contextLoads() {
         BracketGenerator generator = new BracketGenerator(TEST_YEAR);
         assertNotNull(generator.getBracket());
@@ -42,6 +49,7 @@ class MarchMadnessApplicationTests {
     }
 
     @Test
+    @DisplayName("Team model serializes required seed and team fields")
     void teamModel_jsonShapeAndValues() throws Exception {
         Team team = new Team(TEST_YEAR, "Maryland", 1);
         JsonNode node = parseJson(team.toJson());
@@ -53,6 +61,7 @@ class MarchMadnessApplicationTests {
     }
 
     @Test
+    @DisplayName("Team copy constructor preserves equality and hash code contract")
     void teamModel_copyConstructorAndEqualityContract() {
         Team original = new Team(TEST_YEAR, "Arizona", 2);
         Team copy = new Team(original);
@@ -64,6 +73,7 @@ class MarchMadnessApplicationTests {
     }
 
     @Test
+    @DisplayName("Game model always produces distinct winner and loser participants")
     void gameModel_winnerAndLoserAreAlwaysDifferentParticipants() throws Exception {
         Team team1 = new Team(TEST_YEAR, "Maryland", 1);
         Team team2 = new Team(TEST_YEAR, "Arkansas St.", 16);
@@ -80,6 +90,7 @@ class MarchMadnessApplicationTests {
     }
 
     @Test
+    @DisplayName("Game model recalculates outcome after participant changes")
     void gameModel_addTeamsAndSettersRecalculateResult() {
         Team alpha = new Team(TEST_YEAR, "Alpha", 1);
         Team beta = new Team(TEST_YEAR, "Beta", 2);
@@ -101,6 +112,7 @@ class MarchMadnessApplicationTests {
     }
 
     @Test
+    @DisplayName("Region model simulates all rounds and outputs expected bracket sizes")
     void regionModel_simulatesAndProducesRoundJsonArrays() throws Exception {
         Region region = new Region(RegionType.WEST, TEST_YEAR);
         JsonNode node = parseJson(region.toJson());
@@ -114,6 +126,7 @@ class MarchMadnessApplicationTests {
     }
 
     @Test
+    @DisplayName("Final Four model builds semifinal, championship, and champion results")
     void finalFourModel_buildsSemisChampionshipAndChampion() throws Exception {
         Region east = new Region(RegionType.EAST, TEST_YEAR);
         Region midwest = new Region(RegionType.MIDWEST, TEST_YEAR);
@@ -137,6 +150,7 @@ class MarchMadnessApplicationTests {
     }
 
     @Test
+    @DisplayName("Bracket model run initializes regions and champion for the year")
     void bracketModel_runProducesChampionAndExpectedRegionCount() throws Exception {
         Bracket bracket = new Bracket(TEST_YEAR);
         bracket.run();
@@ -150,6 +164,7 @@ class MarchMadnessApplicationTests {
     }
 
     @Test
+    @DisplayName("ModelFactory creates all model types with valid derived state")
     void modelFactory_createsAllModelTypes() {
         ModelFactory factory = new ModelFactory();
 
@@ -175,6 +190,7 @@ class MarchMadnessApplicationTests {
     }
 
     @Test
+    @DisplayName("RegionGenerator returns all four region results with winners")
     void regionGenerator_returnsFourNonNullRegionResultsWithWinners() {
         RegionGenerator generator = new RegionGenerator(TEST_YEAR);
 
@@ -195,6 +211,7 @@ class MarchMadnessApplicationTests {
     }
 
     @Test
+    @DisplayName("FinalFourGenerator returns a complete final four result")
     void finalFourGenerator_returnsValidFinalFourResult() {
         FinalFourGenerator generator = new FinalFourGenerator(TEST_YEAR);
         FinalFour result = generator.getResult();
@@ -207,6 +224,7 @@ class MarchMadnessApplicationTests {
     }
 
     @Test
+    @DisplayName("BracketGenerator returns a completed bracket object")
     void bracketGenerator_returnsCompletedBracket() throws Exception {
         BracketGenerator generator = new BracketGenerator(TEST_YEAR);
         Bracket bracket = generator.getBracket();
@@ -220,6 +238,7 @@ class MarchMadnessApplicationTests {
     }
 
     @Test
+    @DisplayName("Bracket champion must be one of the four Final Four participants")
     void bracketSimulation_championMustComeFromFinalFourParticipants() throws Exception {
         BracketGenerator generator = new BracketGenerator(TEST_YEAR);
         Bracket bracket = generator.getBracket();

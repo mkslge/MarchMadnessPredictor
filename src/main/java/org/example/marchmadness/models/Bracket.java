@@ -26,12 +26,22 @@ public class Bracket {
         this.year = year;
     }
 
+    /**
+     * Command: Run a full tournament simulation for this bracket year.
+     * Preconditions: Year is valid and all region datasets exist.
+     * Postconditions: Regions, Final Four, and champion are populated.
+     */
     public void run() {
         initRegions();
         finalFour = new FinalFour(regions.get(0), regions.get(1), regions.get(2), regions.get(3));
         champion = finalFour.getChampion();
     }
 
+    /**
+     * Command: Initialize regional simulations in fixed tournament order.
+     * Preconditions: Bracket year is set.
+     * Postconditions: `regions` contains EAST, MIDWEST, SOUTH, WEST simulations.
+     */
     private void initRegions() {
         regions.clear();
         regions.add(new Region(RegionType.EAST, year));
@@ -48,6 +58,11 @@ public class Bracket {
         return finalFour.getChampion();
     }
 
+    /**
+     * Command: Serialize this bracket into a JSON string.
+     * Preconditions: Bracket state is initialized.
+     * Postconditions: Returns a JSON representation of the current bracket.
+     */
     public String toJson() {
         try {
             return OBJECT_MAPPER.writeValueAsString(this);

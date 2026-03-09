@@ -9,6 +9,11 @@ public class BracketGenerator {
     private final ModelFactory modelFactory = new ModelFactory();
     private final int year;
 
+    /**
+     * Command: Generate and store a full bracket simulation for a year.
+     * Preconditions: Year datasets exist for all tournament regions.
+     * Postconditions: Bracket store contains a completed bracket for `year`.
+     */
     public BracketGenerator(int year) {
        this.year = year;
        Bracket bracket = modelFactory.createBracket(year);

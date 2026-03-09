@@ -8,13 +8,18 @@ public class FinalFourGenerator {
     private final FinalFourStore finalFourStore = new FinalFourStore();
     private final ModelFactory modelFactory = new ModelFactory();
 
+    /**
+     * Command: Generate and store a Final Four simulation for a year.
+     * Preconditions: Year datasets exist for all regions.
+     * Postconditions: Final Four store contains semifinal, final, and champion results.
+     */
     public FinalFourGenerator(int year) {
-        RegionGenerator rg = new RegionGenerator(year);
+        RegionGenerator regionGenerator = new RegionGenerator(year);
         finalFourStore.save(modelFactory.createFinalFour(
-                rg.getEastResult(),
-                rg.getMidwestResult(),
-                rg.getSouthResult(),
-                rg.getWestResult()
+                regionGenerator.getEastResult(),
+                regionGenerator.getMidwestResult(),
+                regionGenerator.getSouthResult(),
+                regionGenerator.getWestResult()
         ));
     }
 
