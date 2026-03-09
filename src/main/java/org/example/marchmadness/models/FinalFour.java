@@ -1,42 +1,40 @@
 package org.example.marchmadness.models;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
 public class FinalFour {
-    @JsonProperty
-    private Team west;
-    @JsonProperty
-    private Team east;
-    @JsonProperty
-    private Team south;
-    @JsonProperty
-    private Team midwest;
-    private String json;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private Game southVSWest;
-    private Game eastVSMidwest;
-    private Game championship;
+    @JsonProperty
+    private final Team west;
 
-    private Team champion;
+    @JsonProperty
+    private final Team east;
+
+    @JsonProperty
+    private final Team south;
+
+    @JsonProperty
+    private final Team midwest;
+
+    private final Game southVSWest;
+    private final Game eastVSMidwest;
+    private final Game championship;
+    private final Team champion;
 
     public FinalFour(Region east, Region midwest, Region south, Region west) {
-
         this.east = new Team(east.getWinner());
         this.midwest = new Team(midwest.getWinner());
         this.south = new Team(south.getWinner());
         this.west = new Team(west.getWinner());
 
-
-
-
-        southVSWest = new Game(this.south, this.west);
-        eastVSMidwest = new Game(this.east, this.midwest);
-        championship = new Game(southVSWest.getWinner(), eastVSMidwest.getWinner());
-        champion = championship.getWinner();
+        this.southVSWest = new Game(this.south, this.west);
+        this.eastVSMidwest = new Game(this.east, this.midwest);
+        this.championship = new Game(southVSWest.getWinner(), eastVSMidwest.getWinner());
+        this.champion = championship.getWinner();
     }
 
     public Game getChampionship() {
@@ -71,24 +69,11 @@ public class FinalFour {
         return west;
     }
 
-
-    public void setChampion(Team champion) {
-        this.champion = champion;
-    }
-
     public String toJson() {
-        if(json != null) {
-            return json;
-        } else {
-            ObjectMapper mapper = new ObjectMapper();
-            String jsonString;
-            try {
-                json = mapper.writeValueAsString(this);
-            } catch(IOException exc) {
-                exc.printStackTrace();
-                return null;
-            }
-            return json;
+        try {
+            return OBJECT_MAPPER.writeValueAsString(this);
+        } catch (IOException exc) {
+            throw new IllegalStateException("Failed to serialize FinalFour to JSON", exc);
         }
     }
 }

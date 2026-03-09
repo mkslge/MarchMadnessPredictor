@@ -1,29 +1,29 @@
 package org.example.marchmadness.models;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Bracket {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @JsonProperty
-    int year;
+    private final int year;
 
     @JsonProperty
-    Team champion;
+    private Team champion;
 
     @JsonProperty
-    FinalFour finalFour;
+    private FinalFour finalFour;
 
     @JsonProperty
-    ArrayList<Region> regions = new ArrayList<>();
-    String json;
+    private final List<Region> regions = new ArrayList<>();
 
-    public Bracket(int year)  {
+    public Bracket(int year) {
         this.year = year;
-
     }
 
     public void run() {
@@ -32,7 +32,8 @@ public class Bracket {
         champion = finalFour.getChampion();
     }
 
-    private void initRegions()  {
+    private void initRegions() {
+        regions.clear();
         regions.add(new Region(RegionType.EAST, year));
         regions.add(new Region(RegionType.MIDWEST, year));
         regions.add(new Region(RegionType.SOUTH, year));
@@ -40,32 +41,18 @@ public class Bracket {
     }
 
     public String getChampionName() {
-        return finalFour.getChampion().name;
+        return finalFour.getChampion().getName();
     }
 
     public Team getChampion() {
         return finalFour.getChampion();
     }
 
-
-
     public String toJson() {
-        if(json != null) {
-            return json;
-        } else {
-            ObjectMapper mapper = new ObjectMapper();
-            String jsonString;
-            try {
-                json = mapper.writeValueAsString(this);
-            } catch(IOException exc) {
-                exc.printStackTrace();
-                return null;
-            }
-            return json;
+        try {
+            return OBJECT_MAPPER.writeValueAsString(this);
+        } catch (IOException exc) {
+            throw new IllegalStateException("Failed to serialize Bracket to JSON", exc);
         }
     }
-
-
-
-
 }

@@ -1,10 +1,11 @@
 package org.example.marchmadness.controllers;
 
 import org.example.marchmadness.generators.BracketGenerator;
+import org.example.marchmadness.models.Bracket;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RequestMapping(path="/bracket")
@@ -12,10 +13,8 @@ import org.springframework.web.bind.annotation.*;
 public class BracketController {
 
     @GetMapping(path="/simulation/{year}")
-    public String generateBracket(@PathVariable int year ) {
+    public Bracket generateBracket(@PathVariable int year ) {
         BracketGenerator bg = new BracketGenerator(year);
-        return bg.getBracket().toJson();
+        return bg.getBracket();
     }
-
-
 }

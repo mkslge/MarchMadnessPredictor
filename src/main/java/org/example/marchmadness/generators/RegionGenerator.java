@@ -9,36 +9,26 @@ public class RegionGenerator {
     private final RegionStore regionStore = new RegionStore();
     private final ModelFactory modelFactory = new ModelFactory();
 
-    Region eastResult;
-    Region midwestResult;
-    Region southResult;
-    Region westResult;
-
     public RegionGenerator(int year) {
-        eastResult = modelFactory.createRegion(RegionType.EAST, year);
-        midwestResult = modelFactory.createRegion(RegionType.MIDWEST, year);
-        southResult = modelFactory.createRegion(RegionType.SOUTH, year);
-        westResult = modelFactory.createRegion(RegionType.WEST, year);
-
-        regionStore.save(RegionType.EAST, eastResult);
-        regionStore.save(RegionType.MIDWEST, midwestResult);
-        regionStore.save(RegionType.SOUTH, southResult);
-        regionStore.save(RegionType.WEST, westResult);
+        regionStore.save(RegionType.EAST, modelFactory.createRegion(RegionType.EAST, year));
+        regionStore.save(RegionType.MIDWEST, modelFactory.createRegion(RegionType.MIDWEST, year));
+        regionStore.save(RegionType.SOUTH, modelFactory.createRegion(RegionType.SOUTH, year));
+        regionStore.save(RegionType.WEST, modelFactory.createRegion(RegionType.WEST, year));
     }
 
     public Region getEastResult() {
-        return eastResult;
+        return regionStore.get(RegionType.EAST);
     }
 
     public Region getMidwestResult() {
-        return midwestResult;
+        return regionStore.get(RegionType.MIDWEST);
     }
 
     public Region getSouthResult() {
-        return southResult;
+        return regionStore.get(RegionType.SOUTH);
     }
 
     public Region getWestResult() {
-        return westResult;
+        return regionStore.get(RegionType.WEST);
     }
 }
