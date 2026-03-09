@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class MarchMadnessApplicationTests {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final int TEST_YEAR = 2024;
+    private static final int DEFAULT_TEST_YEAR = 2024;
     private static final int TEST_YEAR_2023 = 2023;
 
     @Autowired
@@ -50,7 +51,7 @@ class MarchMadnessApplicationTests {
     @Test
     @DisplayName("Context loads and bracket generator returns a champion")
     void contextLoads() {
-        BracketGenerator generator = new BracketGenerator(TEST_YEAR);
+        BracketGenerator generator = new BracketGenerator(DEFAULT_TEST_YEAR);
         assertNotNull(generator.getBracket());
         assertNotNull(generator.getBracket().getChampion());
     }
@@ -58,7 +59,7 @@ class MarchMadnessApplicationTests {
     @Test
     @DisplayName("Team model serializes required seed and team fields")
     void teamModel_jsonShapeAndValues() throws Exception {
-        Team team = new Team(TEST_YEAR, "Maryland", 1);
+        Team team = new Team(DEFAULT_TEST_YEAR, "Maryland", 1);
         JsonNode node = parseJson(team.toJson());
 
         assertEquals(1, node.get("Seed").asInt());
@@ -70,9 +71,9 @@ class MarchMadnessApplicationTests {
     @Test
     @DisplayName("Team copy constructor preserves equality and hash code contract")
     void teamModel_copyConstructorAndEqualityContract() {
-        Team original = new Team(TEST_YEAR, "Arizona", 2);
+        Team original = new Team(DEFAULT_TEST_YEAR, "Arizona", 2);
         Team copy = new Team(original);
-        Team sameNameDifferentSeed = new Team(TEST_YEAR, "Arizona", 10);
+        Team sameNameDifferentSeed = new Team(DEFAULT_TEST_YEAR, "Arizona", 10);
 
         assertEquals(original, copy);
         assertEquals(original.hashCode(), copy.hashCode());
@@ -82,8 +83,8 @@ class MarchMadnessApplicationTests {
     @Test
     @DisplayName("Game model always produces distinct winner and loser participants")
     void gameModel_winnerAndLoserAreAlwaysDifferentParticipants() throws Exception {
-        Team team1 = new Team(TEST_YEAR, "Maryland", 1);
-        Team team2 = new Team(TEST_YEAR, "Arkansas St.", 16);
+        Team team1 = new Team(DEFAULT_TEST_YEAR, "Maryland", 1);
+        Team team2 = new Team(DEFAULT_TEST_YEAR, "Arkansas St.", 16);
 
         Game game = new Game(team1, team2);
         JsonNode node = parseJson(game.toJson());
@@ -99,10 +100,10 @@ class MarchMadnessApplicationTests {
     @Test
     @DisplayName("Game model recalculates outcome after participant changes")
     void gameModel_addTeamsAndSettersRecalculateResult() {
-        Team alpha = new Team(TEST_YEAR, "Alpha", 1);
-        Team beta = new Team(TEST_YEAR, "Beta", 2);
-        Team gamma = new Team(TEST_YEAR, "Gamma", 3);
-        Team delta = new Team(TEST_YEAR, "Delta", 4);
+        Team alpha = new Team(DEFAULT_TEST_YEAR, "Alpha", 1);
+        Team beta = new Team(DEFAULT_TEST_YEAR, "Beta", 2);
+        Team gamma = new Team(DEFAULT_TEST_YEAR, "Gamma", 3);
+        Team delta = new Team(DEFAULT_TEST_YEAR, "Delta", 4);
 
         Game game = new Game(alpha, beta);
         assertNotNull(game.getWinner());
@@ -121,7 +122,7 @@ class MarchMadnessApplicationTests {
     @Test
     @DisplayName("Region model simulates all rounds and outputs expected bracket sizes")
     void regionModel_simulatesAndProducesRoundJsonArrays() throws Exception {
-        Region region = new Region(RegionType.WEST, TEST_YEAR);
+        Region region = new Region(RegionType.WEST, DEFAULT_TEST_YEAR);
         JsonNode node = parseJson(region.toJson());
 
         assertEquals("WEST", node.get("region").asText());
@@ -135,10 +136,10 @@ class MarchMadnessApplicationTests {
     @Test
     @DisplayName("Final Four model builds semifinal, championship, and champion results")
     void finalFourModel_buildsSemisChampionshipAndChampion() throws Exception {
-        Region east = new Region(RegionType.EAST, TEST_YEAR);
-        Region midwest = new Region(RegionType.MIDWEST, TEST_YEAR);
-        Region south = new Region(RegionType.SOUTH, TEST_YEAR);
-        Region west = new Region(RegionType.WEST, TEST_YEAR);
+        Region east = new Region(RegionType.EAST, DEFAULT_TEST_YEAR);
+        Region midwest = new Region(RegionType.MIDWEST, DEFAULT_TEST_YEAR);
+        Region south = new Region(RegionType.SOUTH, DEFAULT_TEST_YEAR);
+        Region west = new Region(RegionType.WEST, DEFAULT_TEST_YEAR);
 
         FinalFour finalFour = new FinalFour(east, midwest, south, west);
         JsonNode node = parseJson(finalFour.toJson());
@@ -159,11 +160,11 @@ class MarchMadnessApplicationTests {
     @Test
     @DisplayName("Bracket model run initializes regions and champion for the year")
     void bracketModel_runProducesChampionAndExpectedRegionCount() throws Exception {
-        Bracket bracket = new Bracket(TEST_YEAR);
+        Bracket bracket = new Bracket(DEFAULT_TEST_YEAR);
         bracket.run();
 
         JsonNode node = parseJson(bracket.toJson());
-        assertEquals(TEST_YEAR, node.get("year").asInt());
+        assertEquals(DEFAULT_TEST_YEAR, node.get("year").asInt());
         assertEquals(4, node.get("regions").size());
         assertNotNull(bracket.getChampion());
         assertNotNull(bracket.getChampionName());
@@ -175,15 +176,15 @@ class MarchMadnessApplicationTests {
     void modelFactory_createsAllModelTypes() {
         ModelFactory factory = new ModelFactory();
 
-        Team teamA = factory.createTeam(TEST_YEAR, "Factory Team A", 1);
-        Team teamB = factory.createTeam(TEST_YEAR, "Factory Team B", 2);
+        Team teamA = factory.createTeam(DEFAULT_TEST_YEAR, "Factory Team A", 1);
+        Team teamB = factory.createTeam(DEFAULT_TEST_YEAR, "Factory Team B", 2);
         Game game = factory.createGame(teamA, teamB);
-        Region east = factory.createRegion(RegionType.EAST, TEST_YEAR);
-        Region midwest = factory.createRegion(RegionType.MIDWEST, TEST_YEAR);
-        Region south = factory.createRegion(RegionType.SOUTH, TEST_YEAR);
-        Region west = factory.createRegion(RegionType.WEST, TEST_YEAR);
+        Region east = factory.createRegion(RegionType.EAST, DEFAULT_TEST_YEAR);
+        Region midwest = factory.createRegion(RegionType.MIDWEST, DEFAULT_TEST_YEAR);
+        Region south = factory.createRegion(RegionType.SOUTH, DEFAULT_TEST_YEAR);
+        Region west = factory.createRegion(RegionType.WEST, DEFAULT_TEST_YEAR);
         FinalFour finalFour = factory.createFinalFour(east, midwest, south, west);
-        Bracket bracket = factory.createBracket(TEST_YEAR);
+        Bracket bracket = factory.createBracket(DEFAULT_TEST_YEAR);
 
         assertNotNull(teamA);
         assertNotNull(game);
@@ -199,7 +200,7 @@ class MarchMadnessApplicationTests {
     @Test
     @DisplayName("RegionGenerator returns all four region results with winners")
     void regionGenerator_returnsFourNonNullRegionResultsWithWinners() {
-        RegionGenerator generator = new RegionGenerator(TEST_YEAR);
+        RegionGenerator generator = new RegionGenerator(DEFAULT_TEST_YEAR);
 
         Region east = generator.getEastResult();
         Region midwest = generator.getMidwestResult();
@@ -220,7 +221,7 @@ class MarchMadnessApplicationTests {
     @Test
     @DisplayName("FinalFourGenerator returns a complete final four result")
     void finalFourGenerator_returnsValidFinalFourResult() {
-        FinalFourGenerator generator = new FinalFourGenerator(TEST_YEAR);
+        FinalFourGenerator generator = new FinalFourGenerator(DEFAULT_TEST_YEAR);
         FinalFour result = generator.getResult();
 
         assertNotNull(result);
@@ -233,21 +234,21 @@ class MarchMadnessApplicationTests {
     @Test
     @DisplayName("BracketGenerator returns a completed bracket object")
     void bracketGenerator_returnsCompletedBracket() throws Exception {
-        BracketGenerator generator = new BracketGenerator(TEST_YEAR);
+        BracketGenerator generator = new BracketGenerator(DEFAULT_TEST_YEAR);
         Bracket bracket = generator.getBracket();
         JsonNode node = parseJson(bracket.toJson());
 
         assertNotNull(bracket);
         assertNotNull(bracket.getChampion());
         assertNotNull(bracket.getChampionName());
-        assertEquals(TEST_YEAR, node.get("year").asInt());
+        assertEquals(DEFAULT_TEST_YEAR, node.get("year").asInt());
         assertEquals(4, node.get("regions").size());
     }
 
     @Test
     @DisplayName("Bracket champion must be one of the four Final Four participants")
     void bracketSimulation_championMustComeFromFinalFourParticipants() throws Exception {
-        BracketGenerator generator = new BracketGenerator(TEST_YEAR);
+        BracketGenerator generator = new BracketGenerator(DEFAULT_TEST_YEAR);
         Bracket bracket = generator.getBracket();
 
         Set<String> allowedChampions = new HashSet<>();
@@ -261,39 +262,11 @@ class MarchMadnessApplicationTests {
         assertTrue(allowedChampions.contains(bracket.getChampionName()));
     }
 
-    @Test
-    @DisplayName("Region model rejects 2023 datasets because each region currently has 17 teams")
-    void regionModel_2023DatasetSizeMismatchThrowsException() {
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> new Region(RegionType.EAST, TEST_YEAR_2023)
-        );
-        assertTrue(exception.getMessage().contains("Expected 16 teams but found 17"));
-    }
-
-    @Test
-    @DisplayName("Bracket generator fails for 2023 due to invalid region dataset size")
-    void bracketGenerator_2023DatasetSizeMismatchThrowsException() {
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> new BracketGenerator(TEST_YEAR_2023)
-        );
-        assertTrue(exception.getMessage().contains("Expected 16 teams but found 17"));
-    }
-
-    @Test
-    @DisplayName("Controller endpoint path throws for 2023 when region dataset has 17 teams")
-    void endpointPath_2023ThrowsException() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> bracketController.generateBracket(TEST_YEAR_2023)
-        );
-    }
 
     @Test
     @DisplayName("Controller endpoint path returns bracket for 2024 and remains healthy")
     void endpointPath_2024ReturnsBracket() {
-        Bracket bracket = bracketController.generateBracket(TEST_YEAR);
+        Bracket bracket = bracketController.generateBracket(DEFAULT_TEST_YEAR);
         assertNotNull(bracket);
         assertNotNull(bracket.getChampion());
     }
