@@ -1,23 +1,11 @@
 package org.example.marchmadness.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.marchmadness.models.Game;
 import org.example.marchmadness.models.Team;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public final class SimulationUtil {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String YEAR_DATASET_PATTERN = "classpath*:datasets/%d/*.json";
-
     private SimulationUtil() {
         throw new IllegalStateException("Utility class");
     }
@@ -57,7 +45,7 @@ public final class SimulationUtil {
      * Postconditions: Returns a year-stamped `Team`, or throws if no matching team exists.
      */
     private static Team findTeamInYearOrThrow(String teamName, int year) {
-        List<Team> teamsForYear = loadTeamsForYear(year);
+        List<Team> teamsForYear = DatasetUtil.getTeamsForYear(year);
         Optional<Team> matchedTeam = teamsForYear.stream()
                 .filter(team -> team.getName() != null)
                 .filter(team -> team.getName().trim().equalsIgnoreCase(teamName.trim()))
@@ -72,53 +60,5 @@ public final class SimulationUtil {
         Team teamCopy = new Team(matchedTeam.get());
         teamCopy.setYear(year);
         return teamCopy;
-    }
-
-    /**
-     * Command: Load all teams from every region dataset for a specific year.
-     * Preconditions: Dataset files for the year are present and valid JSON.
-     * Postconditions: Returns a combined list of teams across all regions for that year.
-     */
-    private static List<Team> loadTeamsForYear(int year) {
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        List<Team> yearTeams = new ArrayList<>();
-
-        try {
-            Resource[] resources = resolver.getResources(YEAR_DATASET_PATTERN.formatted(year));
-            if (resources.length == 0) {
-                throw new IllegalArgumentException("No dataset files found for year " + year);
-            }
-
-            for (Resource resource : resources) {
-                yearTeams.addAll(loadTeamsFromRegionResource(resource));
-            }
-        } catch (IOException exception) {
-            throw new IllegalStateException("Failed to read team datasets for year " + year, exception);
-        }
-
-        return yearTeams;
-    }
-
-    /**
-     * Command: Parse one regional dataset file into team models.
-     * Preconditions: Resource stream is readable and contains a `Region` team array.
-     * Postconditions: Returns teams from the provided region resource.
-     */
-    private static List<Team> loadTeamsFromRegionResource(Resource resource) {
-        try (InputStream inputStream = resource.getInputStream()) {
-            JsonNode rootNode = OBJECT_MAPPER.readTree(inputStream);
-            JsonNode regionNode = rootNode.get("Region");
-            if (regionNode == null || !regionNode.isArray()) {
-                throw new IllegalArgumentException(
-                        "Dataset file `" + resource.getFilename() + "` is missing a valid `Region` array"
-                );
-            }
-            return OBJECT_MAPPER.readValue(regionNode.toString(), new TypeReference<>() {});
-        } catch (IOException exception) {
-            throw new IllegalStateException(
-                    "Failed to parse dataset file `" + resource.getFilename() + "`",
-                    exception
-            );
-        }
     }
 }

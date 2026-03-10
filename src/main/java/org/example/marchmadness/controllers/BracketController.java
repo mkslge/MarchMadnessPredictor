@@ -4,6 +4,7 @@ import org.example.marchmadness.generators.BracketGenerator;
 import org.example.marchmadness.util.DatasetUtil;
 import org.example.marchmadness.models.Bracket;
 import org.example.marchmadness.models.Game;
+import org.example.marchmadness.models.Team;
 import org.example.marchmadness.util.SimulationUtil;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,16 @@ public class BracketController {
     @GetMapping(path="/years")
     public List<Integer> getAvailableYears() {
         return DatasetUtil.getAvailableYears();
+    }
+
+    /**
+     * Command: Return all tournament teams for a specific year as a REST resource.
+     * Preconditions: `year` is a valid supported dataset year.
+     * Postconditions: Returns all teams that exist in that year's tournament datasets.
+     */
+    @GetMapping(path="/years/{year}/teams")
+    public List<Team> getTeamsForYear(@PathVariable int year) {
+        return DatasetUtil.getTeamsForYear(year);
     }
 
     /**

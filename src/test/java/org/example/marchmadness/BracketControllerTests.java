@@ -3,6 +3,7 @@ package org.example.marchmadness;
 import org.example.marchmadness.controllers.BracketController;
 import org.example.marchmadness.models.Bracket;
 import org.example.marchmadness.models.Game;
+import org.example.marchmadness.models.Team;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -35,6 +37,24 @@ class BracketControllerTests {
         List<Integer> years = bracketController.getAvailableYears();
         assertTrue(years.contains(2023));
         assertTrue(years.contains(2024));
+    }
+
+    @Test
+    @DisplayName("Controller year teams endpoint returns teams for a supported year")
+    void controllerYearTeamsEndpoint_returnsTeamsForYear() {
+        List<Team> teams = bracketController.getTeamsForYear(2024);
+        assertNotNull(teams);
+        assertTrue(teams.stream().anyMatch(team -> "Connecticut".equals(team.getName())));
+    }
+
+    @Test
+    @DisplayName("Controller year teams endpoint throws for unsupported year")
+    void controllerYearTeamsEndpoint_throwsForUnsupportedYear() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> bracketController.getTeamsForYear(1900)
+        );
+        assertTrue(exception.getMessage().contains("Year 1900 is not available"));
     }
 
     @Test
