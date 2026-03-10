@@ -7,7 +7,8 @@ import org.example.marchmadness.generators.BracketGenerator;
 import org.example.marchmadness.generators.FinalFourGenerator;
 import org.example.marchmadness.generators.RegionGenerator;
 import org.example.marchmadness.controllers.BracketController;
-import org.example.marchmadness.metadata.DatasetMetadata;
+import org.example.marchmadness.util.DatasetUtil;
+import org.example.marchmadness.util.SimulationUtil;
 import org.example.marchmadness.models.Bracket;
 import org.example.marchmadness.models.FinalFour;
 import org.example.marchmadness.models.Game;
@@ -275,7 +276,7 @@ class MarchMadnessApplicationTests {
     @Test
     @DisplayName("Dataset metadata returns sorted available years")
     void datasetMetadata_returnsSortedAvailableYears() {
-        List<Integer> years = DatasetMetadata.getAvailableYears();
+        List<Integer> years = DatasetUtil.getAvailableYears();
         assertTrue(years.contains(2023));
         assertTrue(years.contains(2024));
         assertTrue(years.indexOf(2023) > years.indexOf(2024));
@@ -288,5 +289,54 @@ class MarchMadnessApplicationTests {
         List<Integer> years = bracketController.getAvailableYears();
         assertTrue(years.contains(2023));
         assertTrue(years.contains(2024));
+    }
+
+    @Test
+    @DisplayName("Simulation utility simulates game across different years when both teams exist")
+    void simulationUtil_simulatesCrossYearGame() {
+        Game simulatedGame = SimulationUtil.simulateGame("Connecticut", 2024, "Houston", 2023);
+        assertNotNull(simulatedGame);
+        assertNotNull(simulatedGame.getWinner());
+        assertNotNull(simulatedGame.getLoser());
+    }
+
+    @Test
+    @DisplayName("Simulation utility throws for unavailable years with available-year context")
+    void simulationUtil_throwsForUnavailableYear() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> SimulationUtil.simulateGame("Connecticut", 1900, "Houston", 2023)
+        );
+        assertTrue(exception.getMessage().contains("Year 1900 is not available"));
+        assertTrue(exception.getMessage().contains("Available years"));
+    }
+
+    @Test
+    @DisplayName("Simulation utility throws when a team does not exist in provided year")
+    void simulationUtil_throwsForTeamMissingInYear() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> SimulationUtil.simulateGame("NotARealTeam", 2024, "Houston", 2023)
+        );
+        assertTrue(exception.getMessage().contains("does not exist in year 2024"));
+    }
+
+    @Test
+    @DisplayName("Simulation utility throws when team names are blank")
+    void simulationUtil_throwsForBlankTeamName() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> SimulationUtil.simulateGame(" ", 2024, "Houston", 2023)
+        );
+        assertTrue(exception.getMessage().contains("must be non-empty"));
+    }
+
+    @Test
+    @DisplayName("Controller game simulation endpoint path returns a simulated cross-year game")
+    void controllerGameSimulationEndpoint_returnsSimulatedGame() {
+        Game game = bracketController.simulateGame("Connecticut", 2024, "Houston", 2023);
+        assertNotNull(game);
+        assertNotNull(game.getWinner());
+        assertNotNull(game.getLoser());
     }
 }

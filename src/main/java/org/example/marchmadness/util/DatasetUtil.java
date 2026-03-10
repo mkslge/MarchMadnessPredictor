@@ -1,4 +1,4 @@
-package org.example.marchmadness.metadata;
+package org.example.marchmadness.util;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import java.io.IOException;
@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-public final class DatasetMetadata {
+public final class DatasetUtil {
     private static final String DATASET_YEAR_PATTERN = "classpath*:datasets/*";
 
-    private DatasetMetadata() {
+    private DatasetUtil() {
         throw new IllegalStateException("Utility class");
     }
 
