@@ -7,6 +7,7 @@ import org.example.marchmadness.generators.BracketGenerator;
 import org.example.marchmadness.generators.FinalFourGenerator;
 import org.example.marchmadness.generators.RegionGenerator;
 import org.example.marchmadness.controllers.BracketController;
+import org.example.marchmadness.metadata.DatasetMetadata;
 import org.example.marchmadness.models.Bracket;
 import org.example.marchmadness.models.FinalFour;
 import org.example.marchmadness.models.Game;
@@ -18,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.swing.*;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -269,5 +270,23 @@ class MarchMadnessApplicationTests {
         Bracket bracket = bracketController.generateBracket(DEFAULT_TEST_YEAR);
         assertNotNull(bracket);
         assertNotNull(bracket.getChampion());
+    }
+
+    @Test
+    @DisplayName("Dataset metadata returns sorted available years")
+    void datasetMetadata_returnsSortedAvailableYears() {
+        List<Integer> years = DatasetMetadata.getAvailableYears();
+        assertTrue(years.contains(2023));
+        assertTrue(years.contains(2024));
+        assertTrue(years.indexOf(2023) > years.indexOf(2024));
+    }
+
+
+    @Test
+    @DisplayName("Controller years endpoint returns available years list")
+    void controllerYearsEndpoint_returnsAvailableYears() {
+        List<Integer> years = bracketController.getAvailableYears();
+        assertTrue(years.contains(2023));
+        assertTrue(years.contains(2024));
     }
 }
