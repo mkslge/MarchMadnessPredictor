@@ -24,7 +24,7 @@ public final class DatasetUtil {
         throw new IllegalStateException("Utility class");
     }
 
-    /**vn
+    /**
      * Command: Discover all available dataset years from classpath resources.
      * Preconditions: Dataset folders exist under `resources/datasets/{year}`.
      * Postconditions: Returns a sorted list of unique available years.
@@ -71,11 +71,23 @@ public final class DatasetUtil {
     }
 
     /**
-     * Command: Load all tournament teams for a specific year from regional datasets.
+     * Command: Load all tournament team names for a specific year from regional datasets.
+     * Preconditions: `year` is available and dataset files are valid JSON with a `Region` array.
+     * Postconditions: Returns all team names found for that year across all region files.
+     */
+    public static String[] getTeamsForYear(int year) {
+        List<Team> teams = getTeamObjectsForYear(year);
+        return teams.stream()
+                .map(Team::getName)
+                .toArray(String[]::new);
+    }
+
+    /**
+     * Command: Load all tournament team models for a specific year from regional datasets.
      * Preconditions: `year` is available and dataset files are valid JSON with a `Region` array.
      * Postconditions: Returns all teams found for that year across all region files.
      */
-    public static List<Team> getTeamsForYear(int year) {
+    static List<Team> getTeamObjectsForYear(int year) {
         validateYearSupportedOrThrow(year);
 
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();

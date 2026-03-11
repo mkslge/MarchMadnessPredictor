@@ -3,13 +3,13 @@ package org.example.marchmadness;
 import org.example.marchmadness.controllers.BracketController;
 import org.example.marchmadness.models.Bracket;
 import org.example.marchmadness.models.Game;
-import org.example.marchmadness.models.Team;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,6 +52,26 @@ class BracketControllerTests {
     }
 
     @Test
+    @DisplayName("Controller deterministic bracket endpoint throws for unsupported year")
+    void deterministicBracketEndpoint_throwsForUnsupportedYear() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> bracketController.generateDeterministicBracket(1900)
+        );
+        assertTrue(exception.getMessage().contains("Year 1900 is not available"));
+    }
+
+    @Test
+    @DisplayName("Controller stochastic bracket endpoint throws for unsupported year")
+    void stochasticBracketEndpoint_throwsForUnsupportedYear() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> bracketController.generateStochasticBracket(1900)
+        );
+        assertTrue(exception.getMessage().contains("Year 1900 is not available"));
+    }
+
+    @Test
     @DisplayName("Controller years endpoint returns available years list")
     void controllerYearsEndpoint_returnsAvailableYears() {
         List<Integer> years = bracketController.getAvailableYears();
@@ -62,9 +82,9 @@ class BracketControllerTests {
     @Test
     @DisplayName("Controller year teams endpoint returns teams for a supported year")
     void controllerYearTeamsEndpoint_returnsTeamsForYear() {
-        List<Team> teams = bracketController.getTeamsForYear(2024);
+        String[] teams = bracketController.getTeamsForYear(2024);
         assertNotNull(teams);
-        assertTrue(teams.stream().anyMatch(team -> "Connecticut".equals(team.getName())));
+        assertTrue(Arrays.asList(teams).contains("Connecticut"));
     }
 
     @Test

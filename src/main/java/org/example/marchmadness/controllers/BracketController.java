@@ -3,7 +3,6 @@ package org.example.marchmadness.controllers;
 import org.example.marchmadness.util.DatasetUtil;
 import org.example.marchmadness.models.Bracket;
 import org.example.marchmadness.models.Game;
-import org.example.marchmadness.models.Team;
 import org.example.marchmadness.simulation.BracketSimulator;
 import org.example.marchmadness.simulation.BracketSimulatorFactory;
 import org.example.marchmadness.simulation.SimulationMode;
@@ -71,7 +70,7 @@ public class BracketController {
      * Postconditions: Returns all teams that exist in that year's tournament datasets.
      */
     @GetMapping(path="/years/{year}/teams")
-    public List<Team> getTeamsForYear(@PathVariable int year) {
+    public String[] getTeamsForYear(@PathVariable int year) {
         return DatasetUtil.getTeamsForYear(year);
     }
 

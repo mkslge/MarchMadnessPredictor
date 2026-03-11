@@ -45,7 +45,7 @@ public final class SimulationUtil {
      * Postconditions: Returns a year-stamped `Team`, or throws if no matching team exists.
      */
     private static Team findTeamInYearOrThrow(String teamName, int year) {
-        List<Team> teamsForYear = DatasetUtil.getTeamsForYear(year);
+        List<Team> teamsForYear = DatasetUtil.getTeamObjectsForYear(year);
         Optional<Team> matchedTeam = teamsForYear.stream()
                 .filter(team -> team.getName() != null)
                 .filter(team -> team.getName().trim().equalsIgnoreCase(teamName.trim()))

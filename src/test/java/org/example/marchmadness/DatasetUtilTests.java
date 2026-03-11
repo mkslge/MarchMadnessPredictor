@@ -1,11 +1,11 @@
 package org.example.marchmadness;
 
-import org.example.marchmadness.models.Team;
 import org.example.marchmadness.util.DatasetUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,9 +25,10 @@ class DatasetUtilTests {
     @Test
     @DisplayName("Dataset utility returns all teams for a valid year")
     void datasetUtility_returnsAllTeamsForYear() {
-        List<Team> teams = DatasetUtil.getTeamsForYear(2024);
-        assertFalse(teams.isEmpty());
-        assertTrue(teams.stream().anyMatch(team -> "Connecticut".equals(team.getName())));
+        String[] teams = DatasetUtil.getTeamsForYear(2024);
+        assertFalse(teams.length == 0);
+        assertTrue(Arrays.asList(teams).contains("Connecticut"));
+        assertTrue(Arrays.stream(teams).noneMatch(String::isBlank));
     }
 
     @Test

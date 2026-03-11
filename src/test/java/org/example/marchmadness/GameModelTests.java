@@ -3,11 +3,13 @@ package org.example.marchmadness;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.example.marchmadness.models.Game;
 import org.example.marchmadness.models.Team;
+import org.example.marchmadness.simulation.winner.DeterministicWinnerSelectionStrategy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameModelTests {
@@ -51,5 +53,29 @@ class GameModelTests {
         game.setTeam2(beta);
         assertNotNull(game.getWinner());
         assertNotNull(game.getLoser());
+    }
+
+    @Test
+    @DisplayName("Game model supports deterministic winner strategy constructor")
+    void gameModel_supportsDeterministicStrategyConstructor() {
+        Team team1 = new Team(DEFAULT_TEST_YEAR, "Team One", 1);
+        Team team2 = new Team(DEFAULT_TEST_YEAR, "Team Two", 16);
+        Game game = new Game(team1, team2, new DeterministicWinnerSelectionStrategy());
+
+        assertNotNull(game.getWinner());
+        assertNotNull(game.getLoser());
+    }
+
+    @Test
+    @DisplayName("Game model rejects null winner strategy")
+    void gameModel_rejectsNullWinnerStrategy() {
+        Team team1 = new Team(DEFAULT_TEST_YEAR, "Team One", 1);
+        Team team2 = new Team(DEFAULT_TEST_YEAR, "Team Two", 16);
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> new Game(team1, team2, null)
+        );
+        assertTrue(exception.getMessage().contains("Winner selection strategy cannot be null"));
     }
 }
