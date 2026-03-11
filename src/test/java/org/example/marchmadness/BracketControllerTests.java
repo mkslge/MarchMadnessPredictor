@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,6 +30,25 @@ class BracketControllerTests {
         Bracket bracket = bracketController.generateBracket(DEFAULT_TEST_YEAR);
         assertNotNull(bracket);
         assertNotNull(bracket.getChampion());
+    }
+
+    @Test
+    @DisplayName("Controller stochastic bracket endpoint returns a valid bracket")
+    void stochasticBracketEndpoint_returnsBracket() {
+        Bracket bracket = bracketController.generateStochasticBracket(DEFAULT_TEST_YEAR);
+        assertNotNull(bracket);
+        assertNotNull(bracket.getChampion());
+    }
+
+    @Test
+    @DisplayName("Controller deterministic bracket endpoint is reproducible for same year")
+    void deterministicBracketEndpoint_isReproducible() {
+        Bracket first = bracketController.generateDeterministicBracket(DEFAULT_TEST_YEAR);
+        Bracket second = bracketController.generateDeterministicBracket(DEFAULT_TEST_YEAR);
+
+        assertNotNull(first);
+        assertNotNull(second);
+        assertEquals(first.getChampionName(), second.getChampionName());
     }
 
     @Test

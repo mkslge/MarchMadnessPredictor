@@ -2,9 +2,10 @@ package org.example.marchmadness.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.marchmadness.simulation.winner.StochasticWinnerSelectionStrategy;
+import org.example.marchmadness.simulation.winner.WinnerSelectionStrategy;
 
 import java.io.IOException;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Math.sqrt;
 
@@ -22,18 +23,33 @@ public class Game {
     private Team loser;
 
     private double oddsOutOf100;
+    private final WinnerSelectionStrategy winnerSelectionStrategy;
 
     public Game(String name1, int seed1, double adjEM1, double adjT1,
                 String name2, int seed2, double adjEM2, double adjT2) {
         team1 = new Team(name1, seed1, adjEM1, adjT1);
         team2 = new Team(name2, seed2, adjEM2, adjT2);
+        winnerSelectionStrategy = new StochasticWinnerSelectionStrategy();
         this.calculateOdds();
         this.calculateWinner();
     }
 
     public Game(Team team1, Team team2) {
+        this(team1, team2, new StochasticWinnerSelectionStrategy());
+    }
+
+    /**
+     * Command: Create a game with an explicit winner selection strategy.
+     * Preconditions: Teams and strategy are non-null.
+     * Postconditions: Game is initialized and a winner/loser is calculated.
+     */
+    public Game(Team team1, Team team2, WinnerSelectionStrategy winnerSelectionStrategy) {
+        if (winnerSelectionStrategy == null) {
+            throw new IllegalArgumentException("Winner selection strategy cannot be null");
+        }
         this.team1 = team1;
         this.team2 = team2;
+        this.winnerSelectionStrategy = winnerSelectionStrategy;
         this.calculateOdds();
         this.calculateWinner();
     }
@@ -41,6 +57,7 @@ public class Game {
     public Game(String name1, int seed1, String name2, int seed2) {
         team1 = new Team(name1, seed1);
         team2 = new Team(name2, seed2);
+        winnerSelectionStrategy = new StochasticWinnerSelectionStrategy();
     }
 
     Game() {
@@ -48,6 +65,7 @@ public class Game {
         team2 = new Team();
         winner = null;
         loser = null;
+        winnerSelectionStrategy = new StochasticWinnerSelectionStrategy();
     }
 
     public Game(int year) {
@@ -55,6 +73,7 @@ public class Game {
         team2 = new Team(year);
         winner = null;
         loser = null;
+        winnerSelectionStrategy = new StochasticWinnerSelectionStrategy();
     }
 
     /**
@@ -75,13 +94,13 @@ public class Game {
      * Postconditions: Updates `winner` and `loser`, then returns winner name.
      */
     public String calculateWinner() {
-        double randomDouble = 100 * ThreadLocalRandom.current().nextDouble();
-        if (oddsOutOf100 < randomDouble) {
-            winner = new Team(team1);
-            loser = new Team(team2);
-        } else {
+        Team selectedWinner = winnerSelectionStrategy.selectWinner(team1, team2, oddsOutOf100);
+        if (selectedWinner == team2) {
             winner = new Team(team2);
             loser = new Team(team1);
+        } else {
+            winner = new Team(team1);
+            loser = new Team(team2);
         }
         return winner.getName();
     }

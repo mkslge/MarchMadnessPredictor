@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.marchmadness.simulation.winner.StochasticWinnerSelectionStrategy;
+import org.example.marchmadness.simulation.winner.WinnerSelectionStrategy;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,12 +43,29 @@ public class Region {
     private Team regionWinner;
 
     private final int year;
+    private final WinnerSelectionStrategy winnerSelectionStrategy;
 
     public Region(RegionType region, int year) {
+        this(region, year, new StochasticWinnerSelectionStrategy());
+    }
+
+    /**
+     * Command: Create a region simulation with an explicit winner selection strategy.
+     * Preconditions: Region type and strategy are non-null.
+     * Postconditions: Region is initialized and simulation is run.
+     */
+    public Region(RegionType region, int year, WinnerSelectionStrategy winnerSelectionStrategy) {
+        if (region == null) {
+            throw new IllegalArgumentException("Region type cannot be null");
+        }
+        if (winnerSelectionStrategy == null) {
+            throw new IllegalArgumentException("Winner selection strategy cannot be null");
+        }
         this.year = year;
         this.region = region;
         this.teams = new ArrayList<>();
         this.games = new ArrayList<>();
+        this.winnerSelectionStrategy = winnerSelectionStrategy;
         run();
     }
 
@@ -140,7 +159,9 @@ public class Region {
     private void runFirstRound() {
         int numFirstRoundGames = 8;
         for (int i = 0; i < numFirstRoundGames; i++) {
-            games.get(FIRST_ROUND_INDEX).add(new Game(teams.get(i), teams.get(NUM_TEAMS - 1 - i)));
+            games.get(FIRST_ROUND_INDEX).add(
+                    new Game(teams.get(i), teams.get(NUM_TEAMS - 1 - i), winnerSelectionStrategy)
+            );
         }
     }
 
@@ -156,7 +177,7 @@ public class Region {
                 int[] prevRoundIndices = getTeamIndices(g);
                 Team t1 = games.get(r - 1).get(prevRoundIndices[0]).getWinner();
                 Team t2 = games.get(r - 1).get(prevRoundIndices[1]).getWinner();
-                games.get(r).add(new Game(t1, t2));
+                games.get(r).add(new Game(t1, t2, winnerSelectionStrategy));
             }
             numGames /= 2;
         }

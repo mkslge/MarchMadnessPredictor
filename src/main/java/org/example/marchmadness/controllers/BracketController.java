@@ -1,10 +1,12 @@
 package org.example.marchmadness.controllers;
 
-import org.example.marchmadness.generators.BracketGenerator;
 import org.example.marchmadness.util.DatasetUtil;
 import org.example.marchmadness.models.Bracket;
 import org.example.marchmadness.models.Game;
 import org.example.marchmadness.models.Team;
+import org.example.marchmadness.simulation.BracketSimulator;
+import org.example.marchmadness.simulation.BracketSimulatorFactory;
+import org.example.marchmadness.simulation.SimulationMode;
 import org.example.marchmadness.util.SimulationUtil;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +28,31 @@ public class BracketController {
      */
     @GetMapping(path="/simulation/{year}")
     public Bracket generateBracket(@PathVariable int year ) {
+        return generateStochasticBracket(year);
+    }
+
+    /**
+     * Command: Generate a stochastic bracket for a specific tournament year.
+     * Preconditions: The requested `year` has datasets available in resources.
+     * Postconditions: Returns a fully simulated stochastic `Bracket`.
+     */
+    @GetMapping(path="/simulation/stochastic/{year}")
+    public Bracket generateStochasticBracket(@PathVariable int year) {
         DatasetUtil.validateYearSupportedOrThrow(year);
-        BracketGenerator bracketGenerator = new BracketGenerator(year);
-        return bracketGenerator.getBracket();
+        BracketSimulator simulator = BracketSimulatorFactory.create(SimulationMode.STOCHASTIC);
+        return simulator.simulate(year);
+    }
+
+    /**
+     * Command: Generate a deterministic bracket for a specific tournament year.
+     * Preconditions: The requested `year` has datasets available in resources.
+     * Postconditions: Returns a fully simulated deterministic `Bracket`.
+     */
+    @GetMapping(path="/simulation/deterministic/{year}")
+    public Bracket generateDeterministicBracket(@PathVariable int year) {
+        DatasetUtil.validateYearSupportedOrThrow(year);
+        BracketSimulator simulator = BracketSimulatorFactory.create(SimulationMode.DETERMINISTIC);
+        return simulator.simulate(year);
     }
 
     /**

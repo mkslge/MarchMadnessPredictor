@@ -2,6 +2,8 @@ package org.example.marchmadness.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.marchmadness.simulation.winner.StochasticWinnerSelectionStrategy;
+import org.example.marchmadness.simulation.winner.WinnerSelectionStrategy;
 
 import java.io.IOException;
 
@@ -25,20 +27,27 @@ public class FinalFour {
     private final Game championship;
     private final Team champion;
 
+    public FinalFour(Region east, Region midwest, Region south, Region west) {
+        this(east, midwest, south, west, new StochasticWinnerSelectionStrategy());
+    }
+
     /**
      * Command: Build Final Four and championship results from regional winners.
      * Preconditions: All four region objects are non-null and each has a winner.
      * Postconditions: Semifinals, championship, and `champion` are fully simulated.
      */
-    public FinalFour(Region east, Region midwest, Region south, Region west) {
+    public FinalFour(Region east, Region midwest, Region south, Region west, WinnerSelectionStrategy winnerSelectionStrategy) {
+        if (winnerSelectionStrategy == null) {
+            throw new IllegalArgumentException("Winner selection strategy cannot be null");
+        }
         this.east = new Team(east.getWinner());
         this.midwest = new Team(midwest.getWinner());
         this.south = new Team(south.getWinner());
         this.west = new Team(west.getWinner());
 
-        this.southVSWest = new Game(this.south, this.west);
-        this.eastVSMidwest = new Game(this.east, this.midwest);
-        this.championship = new Game(southVSWest.getWinner(), eastVSMidwest.getWinner());
+        this.southVSWest = new Game(this.south, this.west, winnerSelectionStrategy);
+        this.eastVSMidwest = new Game(this.east, this.midwest, winnerSelectionStrategy);
+        this.championship = new Game(southVSWest.getWinner(), eastVSMidwest.getWinner(), winnerSelectionStrategy);
         this.champion = championship.getWinner();
     }
 

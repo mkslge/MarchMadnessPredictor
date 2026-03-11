@@ -2,6 +2,8 @@ package org.example.marchmadness.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.marchmadness.simulation.winner.StochasticWinnerSelectionStrategy;
+import org.example.marchmadness.simulation.winner.WinnerSelectionStrategy;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,9 +23,23 @@ public class Bracket {
 
     @JsonProperty
     private final List<Region> regions = new ArrayList<>();
+    private final WinnerSelectionStrategy winnerSelectionStrategy;
 
     public Bracket(int year) {
+        this(year, new StochasticWinnerSelectionStrategy());
+    }
+
+    /**
+     * Command: Create a bracket with an explicit winner selection strategy.
+     * Preconditions: Winner selection strategy is non-null.
+     * Postconditions: Bracket is initialized and ready to run.
+     */
+    public Bracket(int year, WinnerSelectionStrategy winnerSelectionStrategy) {
+        if (winnerSelectionStrategy == null) {
+            throw new IllegalArgumentException("Winner selection strategy cannot be null");
+        }
         this.year = year;
+        this.winnerSelectionStrategy = winnerSelectionStrategy;
     }
 
     /**
@@ -33,7 +49,7 @@ public class Bracket {
      */
     public void run() {
         initRegions();
-        finalFour = new FinalFour(regions.get(0), regions.get(1), regions.get(2), regions.get(3));
+        finalFour = new FinalFour(regions.get(0), regions.get(1), regions.get(2), regions.get(3), winnerSelectionStrategy);
         champion = finalFour.getChampion();
     }
 
@@ -44,10 +60,10 @@ public class Bracket {
      */
     private void initRegions() {
         regions.clear();
-        regions.add(new Region(RegionType.EAST, year));
-        regions.add(new Region(RegionType.MIDWEST, year));
-        regions.add(new Region(RegionType.SOUTH, year));
-        regions.add(new Region(RegionType.WEST, year));
+        regions.add(new Region(RegionType.EAST, year, winnerSelectionStrategy));
+        regions.add(new Region(RegionType.MIDWEST, year, winnerSelectionStrategy));
+        regions.add(new Region(RegionType.SOUTH, year, winnerSelectionStrategy));
+        regions.add(new Region(RegionType.WEST, year, winnerSelectionStrategy));
     }
 
     public String getChampionName() {
