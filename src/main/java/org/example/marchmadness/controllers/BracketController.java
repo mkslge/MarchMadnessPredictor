@@ -88,4 +88,5 @@ public class BracketController {
     ) {
         return SimulationUtil.simulateGame(team1, year1, team2, year2);
     }
+
 }
