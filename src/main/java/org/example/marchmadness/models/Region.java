@@ -208,6 +208,19 @@ public class Region {
     }
 
     /**
+     * Command: Return every simulated game in this region.
+     * Preconditions: Region simulation has been run.
+     * Postconditions: Returns a flattened copy of the regional games by round.
+     */
+    public List<Game> collectGames() {
+        List<Game> collectedGames = new ArrayList<>();
+        for (List<Game> roundGames : games) {
+            collectedGames.addAll(roundGames);
+        }
+        return collectedGames;
+    }
+
+    /**
      * Command: Serialize this region into a JSON string.
      * Preconditions: Region has been initialized.
      * Postconditions: Returns a JSON representation of the current region state.

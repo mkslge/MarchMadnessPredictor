@@ -75,6 +75,35 @@ public class Bracket {
     }
 
     /**
+     * Command: Return the tournament year represented by this bracket.
+     * Preconditions: Bracket has been constructed.
+     * Postconditions: Returns the immutable year for this bracket.
+     */
+    public int year() {
+        return year;
+    }
+
+    /**
+     * Command: Return every simulated game in this bracket.
+     * Preconditions: Bracket simulation has been run.
+     * Postconditions: Returns all regional, semifinal, and championship games.
+     */
+    public List<Game> collectGames() {
+        List<Game> collectedGames = new ArrayList<>();
+        for (Region region : regions) {
+            collectedGames.addAll(region.collectGames());
+        }
+
+        if (finalFour != null) {
+            collectedGames.add(finalFour.getSouthVSWest());
+            collectedGames.add(finalFour.getEastVSMidwest());
+            collectedGames.add(finalFour.getChampionship());
+        }
+
+        return collectedGames;
+    }
+
+    /**
      * Command: Serialize this bracket into a JSON string.
      * Preconditions: Bracket state is initialized.
      * Postconditions: Returns a JSON representation of the current bracket.

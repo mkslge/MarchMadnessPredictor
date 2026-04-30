@@ -3,6 +3,7 @@ package org.example.marchmadness.controllers;
 import org.example.marchmadness.util.DatasetUtil;
 import org.example.marchmadness.models.Bracket;
 import org.example.marchmadness.models.Game;
+import org.example.marchmadness.services.StatisticsService;
 import org.example.marchmadness.simulation.BracketSimulator;
 import org.example.marchmadness.simulation.BracketSimulatorFactory;
 import org.example.marchmadness.simulation.SimulationMode;
@@ -19,6 +20,11 @@ import java.util.List;
 @RequestMapping(path="/bracket")
 @RestController
 public class BracketController {
+    private final StatisticsService statisticsService;
+
+    public BracketController(StatisticsService statisticsService) {
+        this.statisticsService = statisticsService;
+    }
 
     /**
      * Command: Generate a simulated bracket for a specific tournament year.
@@ -31,6 +37,16 @@ public class BracketController {
     }
 
     /**
+     * Command: Generate a simulated bracket and record its team statistics in PostgreSQL.
+     * Preconditions: The requested `year` has datasets available and PostgreSQL is configured.
+     * Postconditions: Returns the simulated bracket after updating team statistics counters.
+     */
+    @GetMapping(path="/simulation/{year}/record-statistics")
+    public Bracket generateBracketAndRecordStatistics(@PathVariable int year) {
+        return generateStochasticBracketAndRecordStatistics(year);
+    }
+
+    /**
      * Command: Generate a stochastic bracket for a specific tournament year.
      * Preconditions: The requested `year` has datasets available in resources.
      * Postconditions: Returns a fully simulated stochastic `Bracket`.
@@ -40,6 +56,18 @@ public class BracketController {
         DatasetUtil.validateYearSupportedOrThrow(year);
         BracketSimulator simulator = BracketSimulatorFactory.create(SimulationMode.STOCHASTIC);
         return simulator.simulate(year);
+    }
+
+    /**
+     * Command: Generate a stochastic bracket and record its team statistics in PostgreSQL.
+     * Preconditions: The requested `year` has datasets available and PostgreSQL is configured.
+     * Postconditions: Returns the simulated bracket after updating team statistics counters.
+     */
+    @GetMapping(path="/simulation/stochastic/{year}/record-statistics")
+    public Bracket generateStochasticBracketAndRecordStatistics(@PathVariable int year) {
+        Bracket bracket = generateStochasticBracket(year);
+        statisticsService.updateBracketSimulationStatistics(bracket);
+        return bracket;
     }
 
     /**

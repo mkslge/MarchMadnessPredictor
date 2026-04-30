@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.example.marchmadness.models.TeamYearStatistics;
+import org.example.marchmadness.entities.TeamYearStatistics;
 import org.example.marchmadness.services.StatisticsService;
 
 
