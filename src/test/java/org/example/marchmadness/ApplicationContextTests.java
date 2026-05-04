@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
+@SpringBootTest(classes = MarchMadnessApplication.class)
 class ApplicationContextTests {
 
     private static final int DEFAULT_TEST_YEAR = 2024;

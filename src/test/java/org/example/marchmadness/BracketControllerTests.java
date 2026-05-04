@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@SpringBootTest(classes = MarchMadnessApplication.class)
 class BracketControllerTests {
 
     private static final int DEFAULT_TEST_YEAR = 2024;
