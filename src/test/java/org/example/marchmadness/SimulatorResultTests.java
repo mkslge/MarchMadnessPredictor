@@ -1,12 +1,15 @@
 package org.example.marchmadness;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.example.marchmadness.generators.BracketGenerator;
-import org.example.marchmadness.generators.FinalFourGenerator;
-import org.example.marchmadness.generators.RegionGenerator;
 import org.example.marchmadness.models.Bracket;
 import org.example.marchmadness.models.FinalFour;
 import org.example.marchmadness.models.Region;
+import org.example.marchmadness.models.RegionType;
+import org.example.marchmadness.simulation.BracketSimulator;
+import org.example.marchmadness.simulation.BracketSimulatorFactory;
+import org.example.marchmadness.simulation.FinalFourSimulator;
+import org.example.marchmadness.simulation.RegionSimulator;
+import org.example.marchmadness.simulation.SimulationMode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,19 +20,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class GeneratorTests {
+class SimulatorResultTests {
 
     private static final int DEFAULT_TEST_YEAR = 2024;
 
     @Test
-    @DisplayName("RegionGenerator returns all four region results with winners")
-    void regionGenerator_returnsFourNonNullRegionResultsWithWinners() {
-        RegionGenerator generator = new RegionGenerator(DEFAULT_TEST_YEAR);
+    @DisplayName("RegionSimulator returns all four region results with winners")
+    void regionSimulator_returnsFourNonNullRegionResultsWithWinners() {
+        RegionSimulator regionSimulator = new RegionSimulator();
 
-        Region east = generator.getEastResult();
-        Region midwest = generator.getMidwestResult();
-        Region south = generator.getSouthResult();
-        Region west = generator.getWestResult();
+        Region east = regionSimulator.simulate(RegionType.EAST, DEFAULT_TEST_YEAR);
+        Region midwest = regionSimulator.simulate(RegionType.MIDWEST, DEFAULT_TEST_YEAR);
+        Region south = regionSimulator.simulate(RegionType.SOUTH, DEFAULT_TEST_YEAR);
+        Region west = regionSimulator.simulate(RegionType.WEST, DEFAULT_TEST_YEAR);
 
         assertNotNull(east);
         assertNotNull(midwest);
@@ -43,10 +46,15 @@ class GeneratorTests {
     }
 
     @Test
-    @DisplayName("FinalFourGenerator returns a complete final four result")
-    void finalFourGenerator_returnsValidFinalFourResult() {
-        FinalFourGenerator generator = new FinalFourGenerator(DEFAULT_TEST_YEAR);
-        FinalFour result = generator.getResult();
+    @DisplayName("FinalFourSimulator returns a complete final four result")
+    void finalFourSimulator_returnsValidFinalFourResult() {
+        RegionSimulator regionSimulator = new RegionSimulator();
+        FinalFour result = new FinalFourSimulator().simulate(
+                regionSimulator.simulate(RegionType.EAST, DEFAULT_TEST_YEAR),
+                regionSimulator.simulate(RegionType.MIDWEST, DEFAULT_TEST_YEAR),
+                regionSimulator.simulate(RegionType.SOUTH, DEFAULT_TEST_YEAR),
+                regionSimulator.simulate(RegionType.WEST, DEFAULT_TEST_YEAR)
+        );
 
         assertNotNull(result);
         assertNotNull(result.getSouthVSWest());
@@ -56,10 +64,10 @@ class GeneratorTests {
     }
 
     @Test
-    @DisplayName("BracketGenerator returns a completed bracket object")
-    void bracketGenerator_returnsCompletedBracket() throws Exception {
-        BracketGenerator generator = new BracketGenerator(DEFAULT_TEST_YEAR);
-        Bracket bracket = generator.getBracket();
+    @DisplayName("BracketSimulator returns a completed bracket object")
+    void bracketSimulator_returnsCompletedBracket() throws Exception {
+        BracketSimulator simulator = BracketSimulatorFactory.create(SimulationMode.STOCHASTIC);
+        Bracket bracket = simulator.simulate(DEFAULT_TEST_YEAR);
         JsonNode node = TestJsonUtil.parseJson(bracket.toJson());
 
         assertNotNull(bracket);
@@ -72,8 +80,8 @@ class GeneratorTests {
     @Test
     @DisplayName("Bracket champion must be one of the four Final Four participants")
     void bracketSimulation_championMustComeFromFinalFourParticipants() throws Exception {
-        BracketGenerator generator = new BracketGenerator(DEFAULT_TEST_YEAR);
-        Bracket bracket = generator.getBracket();
+        BracketSimulator simulator = BracketSimulatorFactory.create(SimulationMode.STOCHASTIC);
+        Bracket bracket = simulator.simulate(DEFAULT_TEST_YEAR);
 
         Set<String> allowedChampions = new HashSet<>();
         JsonNode finalFourNode = TestJsonUtil.parseJson(bracket.toJson()).get("finalFour");

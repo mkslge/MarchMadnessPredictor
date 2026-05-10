@@ -2,9 +2,6 @@ package org.example.marchmadness.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.marchmadness.simulation.RegionSimulator;
-import org.example.marchmadness.simulation.winner.StochasticWinnerSelectionStrategy;
-import org.example.marchmadness.simulation.winner.WinnerSelectionStrategy;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,69 +9,44 @@ import java.util.List;
 
 public class Bracket {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final int EXPECTED_REGION_COUNT = 4;
 
     @JsonProperty
     private final int year;
 
     @JsonProperty
-    private Team champion;
+    private final Team champion;
 
     @JsonProperty
-    private FinalFour finalFour;
+    private final FinalFour finalFour;
 
     @JsonProperty
-    private final List<Region> regions = new ArrayList<>();
-    private final WinnerSelectionStrategy winnerSelectionStrategy;
-    private final RegionSimulator regionSimulator;
-
-    public Bracket(int year) {
-        this(year, new StochasticWinnerSelectionStrategy());
-    }
+    private final List<Region> regions;
 
     /**
-     * Command: Create a bracket with an explicit winner selection strategy.
-     * Preconditions: Winner selection strategy is non-null.
-     * Postconditions: Bracket is initialized and ready to run.
+     * Command: Create a completed bracket result.
+     * Preconditions: Regions contains four completed region results and Final Four is non-null.
+     * Postconditions: Bracket stores the tournament year, regions, Final Four, and champion.
      */
-    public Bracket(int year, WinnerSelectionStrategy winnerSelectionStrategy) {
-        if (winnerSelectionStrategy == null) {
-            throw new IllegalArgumentException("Winner selection strategy cannot be null");
+    public Bracket(int year, List<Region> regions, FinalFour finalFour) {
+        if (regions == null || finalFour == null) {
+            throw new IllegalArgumentException("Bracket result values cannot be null");
+        }
+        if (regions.size() != EXPECTED_REGION_COUNT) {
+            throw new IllegalArgumentException("Bracket requires exactly four regions");
         }
         this.year = year;
-        this.winnerSelectionStrategy = winnerSelectionStrategy;
-        this.regionSimulator = new RegionSimulator(winnerSelectionStrategy);
-    }
-
-    /**
-     * Command: Run a full tournament simulation for this bracket year.
-     * Preconditions: Year is valid and all region datasets exist.
-     * Postconditions: Regions, Final Four, and champion are populated.
-     */
-    public void run() {
-        initRegions();
-        finalFour = new FinalFour(regions.get(0), regions.get(1), regions.get(2), regions.get(3), winnerSelectionStrategy);
-        champion = finalFour.getChampion();
-    }
-
-    /**
-     * Command: Initialize regional simulations in fixed tournament order.
-     * Preconditions: Bracket year is set.
-     * Postconditions: `regions` contains EAST, MIDWEST, SOUTH, WEST simulations.
-     */
-    private void initRegions() {
-        regions.clear();
-        regions.add(regionSimulator.simulate(RegionType.EAST, year));
-        regions.add(regionSimulator.simulate(RegionType.MIDWEST, year));
-        regions.add(regionSimulator.simulate(RegionType.SOUTH, year));
-        regions.add(regionSimulator.simulate(RegionType.WEST, year));
+        this.regions = List.copyOf(regions);
+        this.finalFour = finalFour;
+        this.champion = new Team(finalFour.getChampion());
     }
 
     public String getChampionName() {
-        return finalFour.getChampion().getName();
+        return champion.getName();
     }
 
     public Team getChampion() {
-        return finalFour.getChampion();
+        return champion;
     }
 
     /**
@@ -88,7 +60,7 @@ public class Bracket {
 
     /**
      * Command: Return every simulated game in this bracket.
-     * Preconditions: Bracket simulation has been run.
+     * Preconditions: Bracket result has been constructed.
      * Postconditions: Returns all regional, semifinal, and championship games.
      */
     public List<Game> collectGames() {
@@ -97,11 +69,9 @@ public class Bracket {
             collectedGames.addAll(region.collectGames());
         }
 
-        if (finalFour != null) {
-            collectedGames.add(finalFour.getSouthVSWest());
-            collectedGames.add(finalFour.getEastVSMidwest());
-            collectedGames.add(finalFour.getChampionship());
-        }
+        collectedGames.add(finalFour.getSouthVSWest());
+        collectedGames.add(finalFour.getEastVSMidwest());
+        collectedGames.add(finalFour.getChampionship());
 
         return collectedGames;
     }

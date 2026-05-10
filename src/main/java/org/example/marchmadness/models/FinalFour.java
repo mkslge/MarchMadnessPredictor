@@ -3,10 +3,6 @@ package org.example.marchmadness.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.example.marchmadness.simulation.GameSimulator;
-import org.example.marchmadness.simulation.winner.StochasticWinnerSelectionStrategy;
-import org.example.marchmadness.simulation.winner.WinnerSelectionStrategy;
-
 import java.io.IOException;
 
 public class FinalFour {
@@ -29,29 +25,39 @@ public class FinalFour {
     private final Game championship;
     private final Team champion;
 
-    public FinalFour(Region east, Region midwest, Region south, Region west) {
-        this(east, midwest, south, west, new StochasticWinnerSelectionStrategy());
-    }
-
     /**
-     * Command: Build Final Four and championship results from regional winners.
-     * Preconditions: All four region objects are non-null and each has a winner.
-     * Postconditions: Semifinals, championship, and `champion` are fully simulated.
+     * Command: Create a completed Final Four result.
+     * Preconditions: All teams, semifinal games, championship game, and champion are non-null.
+     * Postconditions: Final Four stores participants, games, and champion result.
      */
-    public FinalFour(Region east, Region midwest, Region south, Region west, WinnerSelectionStrategy winnerSelectionStrategy) {
-        if (winnerSelectionStrategy == null) {
-            throw new IllegalArgumentException("Winner selection strategy cannot be null");
+    public FinalFour(
+            Team east,
+            Team midwest,
+            Team south,
+            Team west,
+            Game southVSWest,
+            Game eastVSMidwest,
+            Game championship,
+            Team champion
+    ) {
+        if (east == null
+                || midwest == null
+                || south == null
+                || west == null
+                || southVSWest == null
+                || eastVSMidwest == null
+                || championship == null
+                || champion == null) {
+            throw new IllegalArgumentException("Final Four result values cannot be null");
         }
-        this.east = new Team(east.getWinner());
-        this.midwest = new Team(midwest.getWinner());
-        this.south = new Team(south.getWinner());
-        this.west = new Team(west.getWinner());
-
-        GameSimulator gameSimulator = new GameSimulator(winnerSelectionStrategy);
-        this.southVSWest = gameSimulator.simulate(this.south, this.west);
-        this.eastVSMidwest = gameSimulator.simulate(this.east, this.midwest);
-        this.championship = gameSimulator.simulate(southVSWest.getWinner(), eastVSMidwest.getWinner());
-        this.champion = championship.getWinner();
+        this.east = new Team(east);
+        this.midwest = new Team(midwest);
+        this.south = new Team(south);
+        this.west = new Team(west);
+        this.southVSWest = southVSWest;
+        this.eastVSMidwest = eastVSMidwest;
+        this.championship = championship;
+        this.champion = new Team(champion);
     }
 
     public Game getChampionship() {

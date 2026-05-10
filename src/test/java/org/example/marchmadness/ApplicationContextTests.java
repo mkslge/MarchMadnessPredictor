@@ -1,6 +1,9 @@
 package org.example.marchmadness;
 
-import org.example.marchmadness.generators.BracketGenerator;
+import org.example.marchmadness.models.Bracket;
+import org.example.marchmadness.simulation.BracketSimulator;
+import org.example.marchmadness.simulation.BracketSimulatorFactory;
+import org.example.marchmadness.simulation.SimulationMode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,10 +16,11 @@ class ApplicationContextTests {
     private static final int DEFAULT_TEST_YEAR = 2024;
 
     @Test
-    @DisplayName("Context loads and bracket generator returns a champion")
+    @DisplayName("Context loads and bracket simulator returns a champion")
     void contextLoads() {
-        BracketGenerator generator = new BracketGenerator(DEFAULT_TEST_YEAR);
-        assertNotNull(generator.getBracket());
-        assertNotNull(generator.getBracket().getChampion());
+        BracketSimulator simulator = BracketSimulatorFactory.create(SimulationMode.STOCHASTIC);
+        Bracket bracket = simulator.simulate(DEFAULT_TEST_YEAR);
+        assertNotNull(bracket);
+        assertNotNull(bracket.getChampion());
     }
 }
