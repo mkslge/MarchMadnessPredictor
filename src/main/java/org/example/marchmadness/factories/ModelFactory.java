@@ -6,6 +6,7 @@ import org.example.marchmadness.models.Game;
 import org.example.marchmadness.models.Region;
 import org.example.marchmadness.models.RegionType;
 import org.example.marchmadness.models.Team;
+import org.example.marchmadness.simulation.GameSimulator;
 
 public class ModelFactory {
 
@@ -24,7 +25,7 @@ public class ModelFactory {
      * Postconditions: Returns a new simulated `Game` instance.
      */
     public Game createGame(Team team1, Team team2) {
-        return new Game(team1, team2);
+        return new GameSimulator().simulate(team1, team2);
     }
 
     /**

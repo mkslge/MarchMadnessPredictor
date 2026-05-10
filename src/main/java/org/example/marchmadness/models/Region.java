@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.example.marchmadness.simulation.GameSimulator;
 import org.example.marchmadness.simulation.winner.StochasticWinnerSelectionStrategy;
 import org.example.marchmadness.simulation.winner.WinnerSelectionStrategy;
 
@@ -43,7 +45,7 @@ public class Region {
     private Team regionWinner;
 
     private final int year;
-    private final WinnerSelectionStrategy winnerSelectionStrategy;
+    private final GameSimulator gameSimulator;
 
     public Region(RegionType region, int year) {
         this(region, year, new StochasticWinnerSelectionStrategy());
@@ -65,7 +67,7 @@ public class Region {
         this.region = region;
         this.teams = new ArrayList<>();
         this.games = new ArrayList<>();
-        this.winnerSelectionStrategy = winnerSelectionStrategy;
+        this.gameSimulator = new GameSimulator(winnerSelectionStrategy);
         run();
     }
 
@@ -160,7 +162,7 @@ public class Region {
         int numFirstRoundGames = 8;
         for (int i = 0; i < numFirstRoundGames; i++) {
             games.get(FIRST_ROUND_INDEX).add(
-                    new Game(teams.get(i), teams.get(NUM_TEAMS - 1 - i), winnerSelectionStrategy)
+                    gameSimulator.simulate(teams.get(i), teams.get(NUM_TEAMS - 1 - i))
             );
         }
     }
@@ -177,7 +179,7 @@ public class Region {
                 int[] prevRoundIndices = getTeamIndices(g);
                 Team t1 = games.get(r - 1).get(prevRoundIndices[0]).getWinner();
                 Team t2 = games.get(r - 1).get(prevRoundIndices[1]).getWinner();
-                games.get(r).add(new Game(t1, t2, winnerSelectionStrategy));
+                games.get(r).add(gameSimulator.simulate(t1, t2));
             }
             numGames /= 2;
         }

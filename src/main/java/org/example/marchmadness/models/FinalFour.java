@@ -2,6 +2,8 @@ package org.example.marchmadness.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.example.marchmadness.simulation.GameSimulator;
 import org.example.marchmadness.simulation.winner.StochasticWinnerSelectionStrategy;
 import org.example.marchmadness.simulation.winner.WinnerSelectionStrategy;
 
@@ -45,9 +47,10 @@ public class FinalFour {
         this.south = new Team(south.getWinner());
         this.west = new Team(west.getWinner());
 
-        this.southVSWest = new Game(this.south, this.west, winnerSelectionStrategy);
-        this.eastVSMidwest = new Game(this.east, this.midwest, winnerSelectionStrategy);
-        this.championship = new Game(southVSWest.getWinner(), eastVSMidwest.getWinner(), winnerSelectionStrategy);
+        GameSimulator gameSimulator = new GameSimulator(winnerSelectionStrategy);
+        this.southVSWest = gameSimulator.simulate(this.south, this.west);
+        this.eastVSMidwest = gameSimulator.simulate(this.east, this.midwest);
+        this.championship = gameSimulator.simulate(southVSWest.getWinner(), eastVSMidwest.getWinner());
         this.champion = championship.getWinner();
     }
 

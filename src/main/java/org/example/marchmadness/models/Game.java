@@ -2,131 +2,61 @@ package org.example.marchmadness.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.marchmadness.simulation.winner.StochasticWinnerSelectionStrategy;
-import org.example.marchmadness.simulation.winner.WinnerSelectionStrategy;
 
 import java.io.IOException;
 
-import static java.lang.Math.sqrt;
-
 public class Game {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final int STANDARD_DEVIATION = 11;
-
-    private Team team1;
-    private Team team2;
 
     @JsonProperty
-    private Team winner;
+    private final Team team1;
 
     @JsonProperty
-    private Team loser;
+    private final Team team2;
 
-    private double oddsOutOf100;
-    private final WinnerSelectionStrategy winnerSelectionStrategy;
+    @JsonProperty
+    private final double oddsOutOf100;
 
-    public Game(String name1, int seed1, double adjEM1, double adjT1,
-                String name2, int seed2, double adjEM2, double adjT2) {
-        team1 = new Team(name1, seed1, adjEM1, adjT1);
-        team2 = new Team(name2, seed2, adjEM2, adjT2);
-        winnerSelectionStrategy = new StochasticWinnerSelectionStrategy();
-        this.calculateOdds();
-        this.calculateWinner();
-    }
+    @JsonProperty
+    private final Team winner;
 
-    public Game(Team team1, Team team2) {
-        this(team1, team2, new StochasticWinnerSelectionStrategy());
-    }
+    @JsonProperty
+    private final Team loser;
 
     /**
-     * Command: Create a game with an explicit winner selection strategy.
-     * Preconditions: Teams and strategy are non-null.
-     * Postconditions: Game is initialized and a winner/loser is calculated.
+     * Command: Create a completed game result.
+     * Preconditions: All teams are non-null and winner/loser are participants in the matchup.
+     * Postconditions: Game stores matchup participants, win probability, winner, and loser.
      */
-    public Game(Team team1, Team team2, WinnerSelectionStrategy winnerSelectionStrategy) {
-        if (winnerSelectionStrategy == null) {
-            throw new IllegalArgumentException("Winner selection strategy cannot be null");
+    public Game(Team team1, Team team2, double oddsOutOf100, Team winner, Team loser) {
+        if (team1 == null || team2 == null || winner == null || loser == null) {
+            throw new IllegalArgumentException("Game teams cannot be null");
         }
-        this.team1 = team1;
-        this.team2 = team2;
-        this.winnerSelectionStrategy = winnerSelectionStrategy;
-        this.calculateOdds();
-        this.calculateWinner();
-    }
-
-    public Game(String name1, int seed1, String name2, int seed2) {
-        team1 = new Team(name1, seed1);
-        team2 = new Team(name2, seed2);
-        winnerSelectionStrategy = new StochasticWinnerSelectionStrategy();
+        this.team1 = new Team(team1);
+        this.team2 = new Team(team2);
+        this.oddsOutOf100 = oddsOutOf100;
+        this.winner = new Team(winner);
+        this.loser = new Team(loser);
     }
 
     Game() {
-        team1 = new Team();
-        team2 = new Team();
+        team1 = null;
+        team2 = null;
+        oddsOutOf100 = 0;
         winner = null;
         loser = null;
-        winnerSelectionStrategy = new StochasticWinnerSelectionStrategy();
     }
 
-    public Game(int year) {
-        team1 = new Team(year);
-        team2 = new Team(year);
-        winner = null;
-        loser = null;
-        winnerSelectionStrategy = new StochasticWinnerSelectionStrategy();
+    public Team getTeam1() {
+        return this.team1;
     }
 
-    /**
-     * Command: Calculate the underdog win probability for the current matchup.
-     * Preconditions: `team1` and `team2` are non-null with populated tempo/efficiency values.
-     * Postconditions: Updates and returns `oddsOutOf100` for the current matchup.
-     */
-    public double calculateOdds() {
-        double pointDiff = (team1.getAdjEM() - team2.getAdjEM()) * (team1.getAdjT() + team2.getAdjT()) / 200;
-        double cdf = 0.5 * (1 + erf((0 - pointDiff) / (STANDARD_DEVIATION * sqrt(2))));
-        oddsOutOf100 = cdf * 100;
-        return oddsOutOf100;
+    public Team getTeam2() {
+        return this.team2;
     }
 
-    /**
-     * Command: Simulate and select a winner for the current matchup.
-     * Preconditions: `calculateOdds()` has been run for the current teams.
-     * Postconditions: Updates `winner` and `loser`, then returns winner name.
-     */
-    public String calculateWinner() {
-        Team selectedWinner = winnerSelectionStrategy.selectWinner(team1, team2, oddsOutOf100);
-        if (selectedWinner == team2) {
-            winner = new Team(team2);
-            loser = new Team(team1);
-        } else {
-            winner = new Team(team1);
-            loser = new Team(team2);
-        }
-        return winner.getName();
-    }
-
-    /**
-     * Command: Replace matchup participants and immediately resimulate.
-     * Preconditions: Provided teams are non-null.
-     * Postconditions: `team1`, `team2`, `oddsOutOf100`, `winner`, and `loser` are refreshed.
-     */
-    public void addTeams(Team team1, Team team2) {
-        this.team1 = team1;
-        this.team2 = team2;
-        this.calculateOdds();
-        this.calculateWinner();
-    }
-
-    public void setTeam1(Team other) {
-        team1 = new Team(other);
-        this.calculateOdds();
-        this.calculateWinner();
-    }
-
-    public void setTeam2(Team other) {
-        team2 = new Team(other);
-        this.calculateOdds();
-        this.calculateWinner();
+    public double getOddsOutOf100() {
+        return this.oddsOutOf100;
     }
 
     public Team getWinner() {
@@ -152,25 +82,5 @@ public class Game {
 
     public String toString() {
         return team1 + " vs " + team2;
-    }
-
-    private static double erf(double x) {
-        double a1 = 0.254829592;
-        double a2 = -0.284496736;
-        double a3 = 1.421413741;
-        double a4 = -1.453152027;
-        double a5 = 1.061405429;
-        double p = 0.3275911;
-
-        int sign = 1;
-        if (x < 0) {
-            sign = -1;
-        }
-        x = Math.abs(x);
-
-        double t = 1.0 / (1.0 + p * x);
-        double y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
-
-        return sign * y;
     }
 }

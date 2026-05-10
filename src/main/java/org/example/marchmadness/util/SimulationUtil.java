@@ -2,6 +2,8 @@ package org.example.marchmadness.util;
 
 import org.example.marchmadness.models.Game;
 import org.example.marchmadness.models.Team;
+import org.example.marchmadness.simulation.GameSimulator;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +27,7 @@ public final class SimulationUtil {
         Team firstTeam = findTeamInYearOrThrow(name1, year1);
         Team secondTeam = findTeamInYearOrThrow(name2, year2);
 
-        return new Game(firstTeam, secondTeam);
+        return new GameSimulator().simulate(firstTeam, secondTeam);
     }
 
     /**
