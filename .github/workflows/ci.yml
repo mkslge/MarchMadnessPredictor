@@ -5,10 +5,15 @@ on:
     branches:
       - '**'
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Check out repository
@@ -25,4 +30,4 @@ jobs:
         run: chmod +x ./mvnw
 
       - name: Run JUnit tests
-        run: ./mvnw test --batch-mode
+        run: ./mvnw --batch-mode test -q
