@@ -2,6 +2,7 @@ package org.example.marchmadness.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.marchmadness.simulation.RegionSimulator;
 import org.example.marchmadness.simulation.winner.StochasticWinnerSelectionStrategy;
 import org.example.marchmadness.simulation.winner.WinnerSelectionStrategy;
 
@@ -24,6 +25,7 @@ public class Bracket {
     @JsonProperty
     private final List<Region> regions = new ArrayList<>();
     private final WinnerSelectionStrategy winnerSelectionStrategy;
+    private final RegionSimulator regionSimulator;
 
     public Bracket(int year) {
         this(year, new StochasticWinnerSelectionStrategy());
@@ -40,6 +42,7 @@ public class Bracket {
         }
         this.year = year;
         this.winnerSelectionStrategy = winnerSelectionStrategy;
+        this.regionSimulator = new RegionSimulator(winnerSelectionStrategy);
     }
 
     /**
@@ -60,10 +63,10 @@ public class Bracket {
      */
     private void initRegions() {
         regions.clear();
-        regions.add(new Region(RegionType.EAST, year, winnerSelectionStrategy));
-        regions.add(new Region(RegionType.MIDWEST, year, winnerSelectionStrategy));
-        regions.add(new Region(RegionType.SOUTH, year, winnerSelectionStrategy));
-        regions.add(new Region(RegionType.WEST, year, winnerSelectionStrategy));
+        regions.add(regionSimulator.simulate(RegionType.EAST, year));
+        regions.add(regionSimulator.simulate(RegionType.MIDWEST, year));
+        regions.add(regionSimulator.simulate(RegionType.SOUTH, year));
+        regions.add(regionSimulator.simulate(RegionType.WEST, year));
     }
 
     public String getChampionName() {

@@ -7,6 +7,7 @@ import org.example.marchmadness.models.Region;
 import org.example.marchmadness.models.RegionType;
 import org.example.marchmadness.models.Team;
 import org.example.marchmadness.simulation.GameSimulator;
+import org.example.marchmadness.simulation.RegionSimulator;
 
 public class ModelFactory {
 
@@ -34,7 +35,7 @@ public class ModelFactory {
      * Postconditions: Returns a simulated `Region` instance.
      */
     public Region createRegion(RegionType type, int year) {
-        return new Region(type, year);
+        return new RegionSimulator().simulate(type, year);
     }
 
     /**

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.example.marchmadness.models.FinalFour;
 import org.example.marchmadness.models.Region;
 import org.example.marchmadness.models.RegionType;
+import org.example.marchmadness.simulation.RegionSimulator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,10 +18,11 @@ class FinalFourModelTests {
     @Test
     @DisplayName("Final Four model builds semifinal, championship, and champion results")
     void finalFourModel_buildsSemisChampionshipAndChampion() throws Exception {
-        Region east = new Region(RegionType.EAST, DEFAULT_TEST_YEAR);
-        Region midwest = new Region(RegionType.MIDWEST, DEFAULT_TEST_YEAR);
-        Region south = new Region(RegionType.SOUTH, DEFAULT_TEST_YEAR);
-        Region west = new Region(RegionType.WEST, DEFAULT_TEST_YEAR);
+        RegionSimulator regionSimulator = new RegionSimulator();
+        Region east = regionSimulator.simulate(RegionType.EAST, DEFAULT_TEST_YEAR);
+        Region midwest = regionSimulator.simulate(RegionType.MIDWEST, DEFAULT_TEST_YEAR);
+        Region south = regionSimulator.simulate(RegionType.SOUTH, DEFAULT_TEST_YEAR);
+        Region west = regionSimulator.simulate(RegionType.WEST, DEFAULT_TEST_YEAR);
 
         FinalFour finalFour = new FinalFour(east, midwest, south, west);
         JsonNode node = TestJsonUtil.parseJson(finalFour.toJson());
