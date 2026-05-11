@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.example.marchmadness.entities.TeamYearStatistics;
 import org.example.marchmadness.services.StatisticsService;
 
+import java.util.List;
+
 
 @RequestMapping(path="/statistics")
 @RestController
@@ -23,5 +25,10 @@ public class StatisticsController {
     @GetMapping(path="/{team}/{year}")
     public TeamYearStatistics getTeamStatistics(@PathVariable String team, @PathVariable int year) {
         return statisticsService.getTeamSeasonStatistics(team, year);
+    }
+
+    @GetMapping(path="/year/{year}")
+    public List<TeamYearStatistics> getYearStatistics(@PathVariable int year) {
+        return statisticsService.getYearStatistics(year);
     }
 }

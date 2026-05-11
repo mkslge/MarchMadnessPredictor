@@ -29,5 +29,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### Frontend ###
+Frontend/node_modules/
+Frontend/dist/
+
 ### VS Code ###
 .vscode/
