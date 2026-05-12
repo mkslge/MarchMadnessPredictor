@@ -31,4 +31,9 @@ public class StatisticsController {
     public List<TeamYearStatistics> getYearStatistics(@PathVariable int year) {
         return statisticsService.getYearStatistics(year);
     }
+
+    @GetMapping(path="/brackets/total")
+    public long getTotalBracketsGenerated() {
+        return statisticsService.getTotalBracketsGenerated();
+    }
 }

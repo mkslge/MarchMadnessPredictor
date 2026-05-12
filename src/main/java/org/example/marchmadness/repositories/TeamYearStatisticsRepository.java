@@ -1,7 +1,6 @@
 package org.example.marchmadness.repositories;
 
 import org.example.marchmadness.entities.TeamYearStatistics;
-import org.example.marchmadness.models.Game;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -45,6 +44,15 @@ public class TeamYearStatisticsRepository {
             WHERE team = ? AND year = ?
             """;
 
+    private static final String TOTAL_BRACKETS_GENERATED_SQL = """
+            SELECT COALESCE(SUM(year_bracket_simulations), 0)
+            FROM (
+                SELECT year, MAX(bracketsimulations) AS year_bracket_simulations
+                FROM teamyearstatistics
+                GROUP BY year
+            ) yearly_bracket_simulations
+            """;
+
     private final ObjectProvider<JdbcTemplate> jdbcTemplateProvider;
     private final ObjectProvider<TransactionOperations> transactionOperationsProvider;
 
@@ -64,7 +72,13 @@ public class TeamYearStatisticsRepository {
      * Looks up a TeamYearStatistics row using the DataSource created by AwsPsqlDatabaseConfiguration.
      */
     public Optional<TeamYearStatistics> findByTeamAndYear(String teamName, int year) {
-        List<TeamYearStatistics> statistics = jdbcTemplate().query(
+        Optional<JdbcTemplate> jdbcTemplate = availableJdbcTemplate();
+
+        if (jdbcTemplate.isEmpty()) {
+            return Optional.empty();
+        }
+
+        List<TeamYearStatistics> statistics = jdbcTemplate.get().query(
                 FIND_BY_TEAM_AND_YEAR_SQL,
                 TEAM_YEAR_STATISTICS_ROW_MAPPER,
                 teamName,
@@ -82,11 +96,39 @@ public class TeamYearStatisticsRepository {
      * Supports year-level statistics screens without requiring callers to query every team individually.
      */
     public List<TeamYearStatistics> findByYear(int year) {
-        return jdbcTemplate().query(
+        Optional<JdbcTemplate> jdbcTemplate = availableJdbcTemplate();
+
+        if (jdbcTemplate.isEmpty()) {
+            return List.of();
+        }
+
+        return jdbcTemplate.get().query(
                 FIND_BY_YEAR_SQL,
                 TEAM_YEAR_STATISTICS_ROW_MAPPER,
                 year
         );
+    }
+
+    /*
+     * Command: Count every recorded bracket simulation across all tournament years.
+     * Pre-condition: PostgreSQL is enabled and the teamyearstatistics table exists.
+     * Post-condition: Returns one total count of generated brackets, or zero when no statistics exist.
+     *
+     * Uses the maximum team bracket count per year because one generated bracket increments every team in that year.
+     */
+    public long countTotalBracketsGenerated() {
+        Optional<JdbcTemplate> jdbcTemplate = availableJdbcTemplate();
+
+        if (jdbcTemplate.isEmpty()) {
+            return 0L;
+        }
+
+        Long totalBracketsGenerated = jdbcTemplate.get().queryForObject(
+                TOTAL_BRACKETS_GENERATED_SQL,
+                Long.class
+        );
+
+        return totalBracketsGenerated == null ? 0L : totalBracketsGenerated;
     }
 
     /*
@@ -111,7 +153,16 @@ public class TeamYearStatisticsRepository {
         });
     }
 
-    
+    /*
+     * Command: Get the configured application JdbcTemplate when statistics persistence is enabled.
+     * Pre-condition: Statistics may or may not be backed by PostgreSQL in the current environment.
+     * Post-condition: Returns the configured JdbcTemplate when available, otherwise Optional.empty().
+     *
+     * Lets read-only statistics endpoints degrade gracefully for local development without a database.
+     */
+    private Optional<JdbcTemplate> availableJdbcTemplate() {
+        return Optional.ofNullable(jdbcTemplateProvider.getIfAvailable());
+    }
 
     /*
      * Command: Get the configured application JdbcTemplate.

@@ -44,6 +44,15 @@ public class StatisticsService {
     }
 
     /**
+     * Command: Retrieve the total number of recorded brackets generated across all years.
+     * Preconditions: PostgreSQL is enabled and the statistics source is available.
+     * Postconditions: Returns the all-time generated bracket count.
+     */
+    public long getTotalBracketsGenerated() {
+        return teamYearStatisticsRepository.countTotalBracketsGenerated();
+    }
+
+    /**
      * Command: Persist aggregate team statistics from one completed bracket simulation.
      * Preconditions: The bracket is complete, PostgreSQL is enabled, and rows already exist for each team/year.
      * Postconditions: Updates bracket and game counters for every team that played in the bracket.

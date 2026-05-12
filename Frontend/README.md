@@ -11,10 +11,10 @@ npm install
 npm run dev
 ```
 
-The Vite dev server proxies API calls to `http://localhost:8081`. Start the backend with:
+The Vite dev server proxies API calls to `http://localhost:8080`. Start the backend with:
 
 ```bash
-../mvnw spring-boot:run -Dspring-boot.run.arguments=--server.port=8081
+../mvnw spring-boot:run -Dspring-boot.run.arguments=--server.port=8080
 ```
 
 ## Build

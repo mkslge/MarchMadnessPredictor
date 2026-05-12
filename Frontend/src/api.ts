@@ -18,6 +18,34 @@ export type GameResult = {
   loser: Team;
 };
 
+export type RegionResult = {
+  region: string;
+  year: number;
+  fieldOf64: GameResult[];
+  fieldOf32: GameResult[];
+  sweet16: GameResult[];
+  elite8: GameResult[];
+  regionWinner: Team;
+};
+
+export type FinalFourResult = {
+  east: Team;
+  midwest: Team;
+  south: Team;
+  west: Team;
+  eastVSMidwest: GameResult;
+  southVSWest: GameResult;
+  championship: GameResult;
+  champion: Team;
+};
+
+export type BracketResult = {
+  year: number;
+  champion: Team;
+  finalFour: FinalFourResult;
+  regions: RegionResult[];
+};
+
 export type TeamYearStatistics = {
   id: number;
   team: string;
@@ -60,10 +88,18 @@ export function simulateGame(team1: string, year1: number, team2: string, year2:
   return request<GameResult>(`/bracket/game/simulation?${searchParams}`);
 }
 
+export function generateBracket(year: number) {
+  return request<BracketResult>(`/bracket/simulation/${year}`);
+}
+
 export function getYearStatistics(year: number) {
   return request<TeamYearStatistics[]>(`/statistics/year/${year}`);
 }
 
 export function getTeamStatistics(team: string, year: number) {
   return request<TeamYearStatistics>(`/statistics/${encodeURIComponent(team)}/${year}`);
+}
+
+export function getTotalBracketsGenerated() {
+  return request<number>("/statistics/brackets/total");
 }

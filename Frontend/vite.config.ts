@@ -12,8 +12,8 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      "/bracket": "http://localhost:8081",
-      "/statistics": "http://localhost:8081",
+      "/bracket": "http://localhost:8080",
+      "/statistics": "http://localhost:8080",
     },
   },
 });

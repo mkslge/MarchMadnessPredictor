@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import {
   BarChart3,
   CalendarDays,
+  Database,
+  GitBranch,
   Loader2,
   Play,
   RefreshCcw,
@@ -11,10 +13,13 @@ import {
 } from "lucide-react";
 
 import {
+  BracketResult,
   GameResult,
   Team,
   TeamYearStatistics,
+  generateBracket,
   getTeamsForYear,
+  getTotalBracketsGenerated,
   getYearStatistics,
   getYears,
   simulateGame,
@@ -67,11 +72,18 @@ function App() {
   const [gameError, setGameError] = useState("");
   const [isGameLoading, setIsGameLoading] = useState(false);
 
+  const [bracketYear, setBracketYear] = useState<number | "">("");
+  const [bracketResult, setBracketResult] = useState<BracketResult | null>(null);
+  const [bracketError, setBracketError] = useState("");
+  const [isBracketLoading, setIsBracketLoading] = useState(false);
+
   const [statisticsYear, setStatisticsYear] = useState<number | "">("");
   const [statistics, setStatistics] = useState<TeamYearStatistics[]>([]);
   const [statisticsSearch, setStatisticsSearch] = useState("");
   const [statisticsError, setStatisticsError] = useState("");
   const [isStatisticsLoading, setIsStatisticsLoading] = useState(false);
+  const [totalBracketsGenerated, setTotalBracketsGenerated] = useState(0);
+  const [isTotalBracketsLoading, setIsTotalBracketsLoading] = useState(false);
 
   const yearOptions = years.map((year) => ({ label: String(year), value: year }));
 
@@ -106,12 +118,16 @@ function App() {
         const defaultYear = availableYears.length > 0 ? availableYears[availableYears.length - 1] : "";
         setGameYearOne(defaultYear);
         setGameYearTwo(defaultYear);
+        setBracketYear(defaultYear);
         setStatisticsYear(defaultYear);
       })
       .catch((error: Error) => {
         setGameError(error.message);
+        setBracketError(error.message);
         setStatisticsError(error.message);
       });
+
+    loadTotalBracketsGenerated();
   }, []);
 
   useEffect(() => {
@@ -169,6 +185,26 @@ function App() {
     }
   }
 
+  async function handleGenerateBracket() {
+    if (bracketYear === "") {
+      setBracketError("Select a year before generating a bracket.");
+      return;
+    }
+
+    setIsBracketLoading(true);
+    setBracketError("");
+
+    try {
+      const result = await generateBracket(bracketYear);
+      setBracketResult(result);
+    } catch (error) {
+      setBracketResult(null);
+      setBracketError(error instanceof Error ? error.message : "Unable to generate bracket.");
+    } finally {
+      setIsBracketLoading(false);
+    }
+  }
+
   async function loadStatistics(year: number) {
     setIsStatisticsLoading(true);
     setStatisticsError("");
@@ -184,6 +220,19 @@ function App() {
     }
   }
 
+  async function loadTotalBracketsGenerated() {
+    setIsTotalBracketsLoading(true);
+
+    try {
+      const totalGenerated = await getTotalBracketsGenerated();
+      setTotalBracketsGenerated(totalGenerated);
+    } catch (error) {
+      setStatisticsError(error instanceof Error ? error.message : "Unable to load total generated brackets.");
+    } finally {
+      setIsTotalBracketsLoading(false);
+    }
+  }
+
   return (
     <main className="min-h-screen court-grid">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
@@ -194,11 +243,14 @@ function App() {
               March Madness Model
             </div>
             <h1 className="mt-2 text-3xl font-semibold tracking-normal text-foreground">
-              Game Simulator
+              Tournament Simulator
             </h1>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="secondary">{years.length} seasons</Badge>
+            <Badge variant="secondary">
+              {isTotalBracketsLoading ? "Loading brackets" : `${formatter.format(totalBracketsGenerated)} brackets`}
+            </Badge>
           </div>
         </header>
 
@@ -255,6 +307,46 @@ function App() {
           <GameResultCard result={gameResult} isLoading={isGameLoading} />
         </section>
 
+        <section className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <GitBranch className="h-5 w-5 text-accent" />
+                Generate Bracket
+              </CardTitle>
+              <CardDescription>Run a full tournament simulation for one season.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="grid gap-3 sm:grid-cols-[180px_auto]">
+                <Select
+                  aria-label="Bracket year"
+                  value={bracketYear}
+                  options={yearOptions}
+                  placeholder="Year"
+                  onChange={(event) => setBracketYear(Number(event.target.value))}
+                />
+                <Button disabled={isBracketLoading || bracketYear === ""} onClick={handleGenerateBracket}>
+                  {isBracketLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GitBranch className="h-4 w-4" />}
+                  Generate Bracket
+                </Button>
+              </div>
+
+              {bracketError ? (
+                <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                  {bracketError}
+                </div>
+              ) : null}
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <ResultMetric label="Selected year" value={bracketYear === "" ? "None" : String(bracketYear)} />
+                <ResultMetric label="Latest champion" value={bracketResult ? teamName(bracketResult.champion) : "None"} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <BracketResultCard result={bracketResult} isLoading={isBracketLoading} />
+        </section>
+
         <section>
           <Card>
             <CardHeader className="gap-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
@@ -285,9 +377,14 @@ function App() {
                 <Button
                   variant="outline"
                   disabled={isStatisticsLoading || statisticsYear === ""}
-                  onClick={() => statisticsYear !== "" && loadStatistics(statisticsYear)}
+                  onClick={() => {
+                    if (statisticsYear !== "") {
+                      loadStatistics(statisticsYear);
+                    }
+                    loadTotalBracketsGenerated();
+                  }}
                 >
-                  {isStatisticsLoading ? (
+                  {isStatisticsLoading || isTotalBracketsLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <RefreshCcw className="h-4 w-4" />
@@ -297,7 +394,13 @@ function App() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-3 sm:grid-cols-4">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                <Metric
+                  label="All-time brackets"
+                  value={totalBracketsGenerated}
+                  icon={<Database className="h-4 w-4" />}
+                  isLoading={isTotalBracketsLoading}
+                />
                 <Metric label="Teams" value={statistics.length} icon={<Users className="h-4 w-4" />} />
                 <Metric
                   label="Bracket wins"
@@ -412,14 +515,74 @@ function GameResultCard({ result, isLoading }: { result: GameResult | null; isLo
   );
 }
 
-function Metric({ label, value, icon }: { label: string; value: number; icon: React.ReactNode }) {
+function BracketResultCard({ result, isLoading }: { result: BracketResult | null; isLoading: boolean }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Trophy className="h-5 w-5 text-secondary" />
+          Bracket Result
+        </CardTitle>
+        <CardDescription>Champion, Final Four, and regional winners from the latest generated bracket.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        {isLoading ? (
+          <div className="flex min-h-[259px] items-center justify-center rounded-lg border border-dashed">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : result ? (
+          <div className="grid gap-4">
+            <div className="rounded-lg border bg-secondary/20 p-4">
+              <div className="text-sm text-muted-foreground">Champion</div>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
+                <span className="text-2xl font-semibold">{teamName(result.champion)}</span>
+                <Badge>Seed {teamSeed(result.champion)}</Badge>
+                <Badge variant="secondary">{result.year}</Badge>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-4">
+              {(["east", "midwest", "south", "west"] as const).map((regionName) => (
+                <ResultMetric
+                  key={regionName}
+                  label={formatRegionName(regionName)}
+                  value={teamName(result.finalFour[regionName])}
+                />
+              ))}
+            </div>
+
+            
+          </div>
+        ) : (
+          <div className="flex min-h-[259px] items-center justify-center rounded-lg border border-dashed px-6 text-center text-sm text-muted-foreground">
+            No bracket generated yet.
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function Metric({
+  label,
+  value,
+  icon,
+  isLoading = false,
+}: {
+  label: string;
+  value: number;
+  icon: React.ReactNode;
+  isLoading?: boolean;
+}) {
   return (
     <div className="rounded-lg border bg-muted/30 p-3">
       <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
         {icon}
         {label}
       </div>
-      <div className="mt-2 text-2xl font-semibold">{formatter.format(value)}</div>
+      <div className="mt-2 text-2xl font-semibold">
+        {isLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : formatter.format(value)}
+      </div>
     </div>
   );
 }
@@ -431,6 +594,10 @@ function ResultMetric({ label, value }: { label: string; value: string }) {
       <div className="mt-2 truncate text-base font-semibold">{value}</div>
     </div>
   );
+}
+
+function formatRegionName(regionName: string) {
+  return regionName.charAt(0).toUpperCase() + regionName.slice(1).toLowerCase();
 }
 
 function StatisticsTable({ rows, isLoading }: { rows: TeamYearStatistics[]; isLoading: boolean }) {

@@ -149,8 +149,37 @@ class TeamYearStatisticsRepositoryTest {
     }
 
     @Test
-    @DisplayName("Repository findByTeamAndYear throws when PostgreSQL is not configured")
-    void findByTeamAndYear_throwsWhenDataSourceIsMissing() {
+    @DisplayName("Repository countTotalBracketsGenerated sums one bracket simulation count per year")
+    void countTotalBracketsGenerated_sumsOneBracketSimulationCountPerYear() {
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+        ObjectProvider<JdbcTemplate> jdbcTemplateProvider = mockJdbcTemplateProvider(jdbcTemplate);
+        ObjectProvider<TransactionOperations> transactionOperationsProvider = mockTransactionOperationsProvider(null);
+
+        when(jdbcTemplate.queryForObject(
+                eq("""
+                        SELECT COALESCE(SUM(year_bracket_simulations), 0)
+                        FROM (
+                            SELECT year, MAX(bracketsimulations) AS year_bracket_simulations
+                            FROM teamyearstatistics
+                            GROUP BY year
+                        ) yearly_bracket_simulations
+                        """),
+                eq(Long.class)
+        )).thenReturn(150L);
+
+        TeamYearStatisticsRepository repository = new TeamYearStatisticsRepository(
+                jdbcTemplateProvider,
+                transactionOperationsProvider
+        );
+
+        long totalBracketsGenerated = repository.countTotalBracketsGenerated();
+
+        assertEquals(150L, totalBracketsGenerated);
+    }
+
+    @Test
+    @DisplayName("Repository findByTeamAndYear returns empty when PostgreSQL is not configured")
+    void findByTeamAndYear_returnsEmptyWhenDataSourceIsMissing() {
         ObjectProvider<JdbcTemplate> jdbcTemplateProvider = mockJdbcTemplateProvider(null);
         ObjectProvider<TransactionOperations> transactionOperationsProvider = mockTransactionOperationsProvider(null);
         TeamYearStatisticsRepository repository = new TeamYearStatisticsRepository(
@@ -158,12 +187,39 @@ class TeamYearStatisticsRepositoryTest {
                 transactionOperationsProvider
         );
 
-        IllegalStateException exception = assertThrows(
-                IllegalStateException.class,
-                () -> repository.findByTeamAndYear("Maryland", 2023)
+        Optional<TeamYearStatistics> result = repository.findByTeamAndYear("Maryland", 2023);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Repository findByYear returns empty when PostgreSQL is not configured")
+    void findByYear_returnsEmptyWhenDataSourceIsMissing() {
+        ObjectProvider<JdbcTemplate> jdbcTemplateProvider = mockJdbcTemplateProvider(null);
+        ObjectProvider<TransactionOperations> transactionOperationsProvider = mockTransactionOperationsProvider(null);
+        TeamYearStatisticsRepository repository = new TeamYearStatisticsRepository(
+                jdbcTemplateProvider,
+                transactionOperationsProvider
         );
 
-        assertTrue(exception.getMessage().contains("PostgreSQL is not configured"));
+        List<TeamYearStatistics> result = repository.findByYear(2023);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Repository countTotalBracketsGenerated returns zero when PostgreSQL is not configured")
+    void countTotalBracketsGenerated_returnsZeroWhenDataSourceIsMissing() {
+        ObjectProvider<JdbcTemplate> jdbcTemplateProvider = mockJdbcTemplateProvider(null);
+        ObjectProvider<TransactionOperations> transactionOperationsProvider = mockTransactionOperationsProvider(null);
+        TeamYearStatisticsRepository repository = new TeamYearStatisticsRepository(
+                jdbcTemplateProvider,
+                transactionOperationsProvider
+        );
+
+        long totalBracketsGenerated = repository.countTotalBracketsGenerated();
+
+        assertEquals(0L, totalBracketsGenerated);
     }
 
     @Test
