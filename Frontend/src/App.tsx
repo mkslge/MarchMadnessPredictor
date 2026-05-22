@@ -64,7 +64,11 @@ function App() {
         ) : null}
 
         <GameSimulatorSection defaultYear={defaultYear} yearOptions={yearOptions} />
-        <BracketGeneratorSection defaultYear={defaultYear} yearOptions={yearOptions} />
+        <BracketGeneratorSection
+          defaultYear={defaultYear}
+          onBracketGenerated={loadTotalBracketsGenerated}
+          yearOptions={yearOptions}
+        />
         <StatisticsSection
           defaultYear={defaultYear}
           isTotalBracketsLoading={isTotalBracketsLoading}

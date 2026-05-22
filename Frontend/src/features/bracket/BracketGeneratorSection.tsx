@@ -12,10 +12,15 @@ import { formatRegionName, teamName, teamSeed } from "@/lib/formatters";
 
 type BracketGeneratorSectionProps = {
   defaultYear: number | "";
+  onBracketGenerated: () => void;
   yearOptions: Array<{ label: string; value: number }>;
 };
 
-export function BracketGeneratorSection({ defaultYear, yearOptions }: BracketGeneratorSectionProps) {
+export function BracketGeneratorSection({
+  defaultYear,
+  onBracketGenerated,
+  yearOptions,
+}: BracketGeneratorSectionProps) {
   const [bracketYear, setBracketYear] = useState<number | "">(defaultYear);
   const [bracketResult, setBracketResult] = useState<BracketResult | null>(null);
   const [bracketError, setBracketError] = useState("");
@@ -37,6 +42,7 @@ export function BracketGeneratorSection({ defaultYear, yearOptions }: BracketGen
     try {
       const result = await generateBracket(bracketYear);
       setBracketResult(result);
+      onBracketGenerated();
     } catch (error) {
       setBracketResult(null);
       setBracketError(error instanceof Error ? error.message : "Unable to generate bracket.");

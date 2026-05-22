@@ -60,13 +60,31 @@ export type TeamYearStatistics = {
 
 async function request<T>(path: string): Promise<T> {
   const response = await fetch(path);
+  const contentType = response.headers.get("content-type") || "";
+  const responseText = await response.text();
 
   if (!response.ok) {
-    const message = await response.text();
-    throw new Error(message || `Request failed with status ${response.status}`);
+    throw new Error(errorMessageFromResponse(responseText) || `Request failed with status ${response.status}`);
   }
 
-  return response.json() as Promise<T>;
+  if (!contentType.includes("application/json")) {
+    throw new Error(`Expected JSON from ${path}, but received ${contentType || "an unknown content type"}.`);
+  }
+
+  return JSON.parse(responseText) as T;
+}
+
+function errorMessageFromResponse(responseText: string) {
+  if (!responseText) {
+    return "";
+  }
+
+  try {
+    const parsedBody = JSON.parse(responseText) as { error?: string; message?: string };
+    return parsedBody.message || parsedBody.error || responseText;
+  } catch {
+    return responseText;
+  }
 }
 
 export function getYears() {
@@ -89,7 +107,7 @@ export function simulateGame(team1: string, year1: number, team2: string, year2:
 }
 
 export function generateBracket(year: number) {
-  return request<BracketResult>(`/bracket/simulation/${year}`);
+  return request<BracketResult>(`/bracket/simulation/stochastic/${year}/record-statistics`);
 }
 
 export function getYearStatistics(year: number) {
